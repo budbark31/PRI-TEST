@@ -96,5 +96,13 @@ export default defineType({
         layout: 'grid',
       },
     }),
+    defineField({
+      name: 'demo',
+      title: 'Demo Listing',
+      type: 'boolean',
+      description: 'Used for bulk demo data; hidden in the Studio.',
+      hidden: true,
+      initialValue: false,
+    }),
   ],
 })

@@ -51,7 +51,6 @@ export default defineType({
           { title: 'Day Cabs', value: 'day-cabs' },
           { title: 'Heavy Equipment', value: 'heavy-equipment' },
           { title: 'Trailers', value: 'trailers' },
-          { title: 'Parts (Phase 2)', value: 'parts' },
         ],
       },
     }),
@@ -99,6 +98,14 @@ export default defineType({
       title: 'Paperwork / Files',
       type: 'file',
       description: 'Upload Titles, Bill of Sale, Repair Orders (PDFs).',
+    }),
+    defineField({
+      name: 'demo',
+      title: 'Demo Listing',
+      type: 'boolean',
+      description: 'Used for bulk demo data; hidden in the Studio.',
+      hidden: true,
+      initialValue: false,
     })
   ],
 })

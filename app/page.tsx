@@ -4,8 +4,16 @@ import UnifiedInventoryGrid from "@/app/components/UnifiedInventoryGrid";
 
 export const revalidate = 60;
 
+type HomeData = { trucks: any[]; parts: any[] };
+
 export default async function Home() {
-  const data = await client.fetch(ALL_INVENTORY_QUERY);
+  let data: HomeData = { trucks: [], parts: [] };
+
+  try {
+    data = await client.fetch(ALL_INVENTORY_QUERY);
+  } catch (error) {
+    console.error("Sanity fetch failed for /:", error);
+  }
 
   return (
     <main className="min-h-screen bg-white pb-20">

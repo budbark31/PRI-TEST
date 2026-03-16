@@ -46,7 +46,13 @@ function formatCondition(condition: string): string {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const part: Part | null = await client.fetch(PART_BY_SLUG_QUERY, { slug });
+  let part: Part | null = null;
+
+  try {
+    part = await client.fetch(PART_BY_SLUG_QUERY, { slug });
+  } catch (error) {
+    console.error("Sanity fetch failed for /parts/[slug] metadata:", error);
+  }
   
   if (!part) {
     return { title: "Part Not Found | Penn Rock Industries" };
@@ -60,7 +66,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PartPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const part: Part | null = await client.fetch(PART_BY_SLUG_QUERY, { slug });
+  let part: Part | null = null;
+
+  try {
+    part = await client.fetch(PART_BY_SLUG_QUERY, { slug });
+  } catch (error) {
+    console.error("Sanity fetch failed for /parts/[slug]:", error);
+  }
 
   if (!part) {
     notFound();

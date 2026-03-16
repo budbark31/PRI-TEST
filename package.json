@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:demo": "node scripts/seed-demo.mjs",
+    "cleanup:demo": "node scripts/cleanup-demo.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^1.2.0",

@@ -48,7 +48,13 @@ type Props = {
 // SEO Generator (Same as before)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const data = await client.fetch(groq`*[_type == "inventory" && slug.current == $slug][0]{ title, "image": images[0].asset->url, year, make, model }`, { slug });
+  let data: { title?: string; image?: string } | null = null;
+
+  try {
+    data = await client.fetch(groq`*[_type == "inventory" && slug.current == $slug][0]{ title, "image": images[0].asset->url, year, make, model }`, { slug });
+  } catch (error) {
+    console.error("Sanity fetch failed for /inventory/[slug] metadata:", error);
+  }
   
   if (!data) return { title: "Truck Not Found" };
 
@@ -63,7 +69,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TruckPage({ params }: Props) {
   const { slug } = await params;
-  const data = await client.fetch(TRUCK_QUERY, { slug });
+  let data: { truck?: any; similar?: any[] } | null = null;
+
+  try {
+    data = await client.fetch(TRUCK_QUERY, { slug });
+  } catch (error) {
+    console.error("Sanity fetch failed for /inventory/[slug]:", error);
+  }
   const { truck, similar } = data || {};
 
   if (!truck) {

@@ -133,8 +133,7 @@ export default function ImageGallery({ images, title }: GalleryProps) {
               alt={`Fullscreen view ${lightboxIndex + 1}`}
               fill
               className="object-contain" // Ensures the whole truck fits on screen
-              quality={100}
-              priority
+              quality={85}
             />
           </div>
 

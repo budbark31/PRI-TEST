@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // Types
 interface Truck {
@@ -39,10 +39,11 @@ interface UnifiedGridProps {
 }
 
 // Constants
-const TRUCK_MAKES = ["All", "Kenworth", "Peterbilt", "Mack", "Ford", "Freightliner", "International", "Other"];
-const TRUCK_CATEGORIES = ["All", "Dump Trucks", "Day Cabs", "Heavy Equipment", "Trailers"];
-const PART_CATEGORIES = ["All", "Engine", "Transmission", "Body/Cab", "Maintenance/Filters", "Accessories", "Other"];
-const PART_CONDITIONS = ["All", "New", "Used", "Rebuilt", "Core"];
+const TRUCK_MAKES = ["Kenworth", "Peterbilt", "Mack", "Ford", "Freightliner", "International", "Other"];
+const TRUCK_CATEGORIES = ["Dump Trucks", "Day Cabs", "Heavy Equipment", "Trailers"];
+const PART_CATEGORIES = ["Engine", "Transmission", "Body/Cab", "Maintenance/Filters", "Accessories", "Other"];
+const PART_CONDITIONS = ["New", "Used", "Rebuilt", "Core"];
+const PAGE_SIZE = 12;
 
 // Category value mappers
 const truckCategoryMap: Record<string, string> = {
@@ -98,11 +99,13 @@ function formatCondition(condition: string): string {
 export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps) {
   // State
   const [activeTab, setActiveTab] = useState<"trucks" | "parts">("trucks");
-  const [truckMake, setTruckMake] = useState("All");
-  const [truckCategory, setTruckCategory] = useState("All");
-  const [partCategory, setPartCategory] = useState("All");
-  const [partCondition, setPartCondition] = useState("All");
+  const [truckMakes, setTruckMakes] = useState<string[]>([]);
+  const [truckCategories, setTruckCategories] = useState<string[]>([]);
+  const [partCategories, setPartCategories] = useState<string[]>([]);
+  const [partConditions, setPartConditions] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   // Quick Stats (count items not sold/out-of-stock - handles missing status field)
   const availableTrucks = trucks.filter((t) => t.status !== "sold").length;
@@ -110,24 +113,64 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
 
   // Filtered data
   const filteredTrucks = useMemo(() => {
+    const knownMakes = TRUCK_MAKES.filter((make) => make !== "Other");
     return trucks.filter((truck) => {
-      const makeMatch = truckMake === "All" || truck.make === truckMake || (truckMake === "Other" && !TRUCK_MAKES.slice(1, -1).includes(truck.make));
-      const categoryMatch = truckCategory === "All" || truck.category === truckCategoryMap[truckCategory];
+      const makeMatch =
+        truckMakes.length === 0 ||
+        truckMakes.some((make) =>
+          make === "Other" ? !knownMakes.includes(truck.make) : truck.make === make
+        );
+      const categoryMatch =
+        truckCategories.length === 0 || truckCategories.includes(truck.category);
       const searchMatch = !searchQuery || truck.title.toLowerCase().includes(searchQuery.toLowerCase());
       return makeMatch && categoryMatch && searchMatch;
     });
-  }, [trucks, truckMake, truckCategory, searchQuery]);
+  }, [trucks, truckMakes, truckCategories, searchQuery]);
 
   const filteredParts = useMemo(() => {
     return parts.filter((part) => {
-      const categoryMatch = partCategory === "All" || part.category === partCategoryMap[partCategory];
-      const conditionMatch = partCondition === "All" || part.condition === partConditionMap[partCondition];
+      const categoryMatch =
+        partCategories.length === 0 || partCategories.includes(part.category);
+      const conditionMatch =
+        partConditions.length === 0 || partConditions.includes(part.condition);
       const searchMatch = !searchQuery || part.title.toLowerCase().includes(searchQuery.toLowerCase());
       return categoryMatch && conditionMatch && searchMatch;
     });
-  }, [parts, partCategory, partCondition, searchQuery]);
+  }, [parts, partCategories, partConditions, searchQuery]);
 
   const displayedItems = activeTab === "trucks" ? filteredTrucks : filteredParts;
+  const visibleItems = useMemo(() => displayedItems.slice(0, visibleCount), [displayedItems, visibleCount]);
+
+  const loadMore = useCallback(() => {
+    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, displayedItems.length));
+  }, [displayedItems.length]);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [activeTab, truckMakes, truckCategories, partCategories, partConditions, searchQuery]);
+
+  useEffect(() => {
+    if (visibleCount > displayedItems.length) {
+      setVisibleCount(displayedItems.length);
+    }
+  }, [displayedItems.length, visibleCount]);
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && visibleCount < displayedItems.length) {
+          loadMore();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [loadMore, visibleCount, displayedItems.length]);
 
   return (
     <div>
@@ -189,78 +232,161 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-4 justify-center">
-        {activeTab === "trucks" ? (
-          <>
-            {/* Make Filter */}
-            <select
-              value={truckMake}
-              onChange={(e) => setTruckMake(e.target.value)}
-              className="px-4 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-700 font-medium focus:border-slate-900 focus:outline-none"
-            >
-              {TRUCK_MAKES.map((make) => (
-                <option key={make} value={make}>
-                  {make === "All" ? "All Makes" : make}
-                </option>
-              ))}
-            </select>
+        <div className="flex flex-col gap-4 w-full">
+          {activeTab === "trucks" ? (
+            <>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="text-sm font-semibold text-gray-600 mr-2">Make:</span>
+                <button
+                  onClick={() => setTruckMakes([])}
+                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
+                    truckMakes.length === 0
+                      ? "bg-slate-900 text-white border-slate-900"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
+                  }`}
+                >
+                  All
+                </button>
+                {TRUCK_MAKES.map((make) => (
+                  <button
+                    key={make}
+                    onClick={() =>
+                      setTruckMakes((prev) =>
+                        prev.includes(make) ? prev.filter((m) => m !== make) : [...prev, make]
+                      )
+                    }
+                    className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
+                      truckMakes.includes(make)
+                        ? "bg-slate-900 text-white border-slate-900"
+                        : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
+                    }`}
+                  >
+                    {make}
+                  </button>
+                ))}
+              </div>
 
-            {/* Category Filter */}
-            <select
-              value={truckCategory}
-              onChange={(e) => setTruckCategory(e.target.value)}
-              className="px-4 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-700 font-medium focus:border-slate-900 focus:outline-none"
-            >
-              {TRUCK_CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat === "All" ? "All Categories" : cat}
-                </option>
-              ))}
-            </select>
-          </>
-        ) : (
-          <>
-            {/* Part Category Filter */}
-            <select
-              value={partCategory}
-              onChange={(e) => setPartCategory(e.target.value)}
-              className="px-4 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-700 font-medium focus:border-slate-900 focus:outline-none"
-            >
-              {PART_CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat === "All" ? "All Categories" : cat}
-                </option>
-              ))}
-            </select>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="text-sm font-semibold text-gray-600 mr-2">Category:</span>
+                <button
+                  onClick={() => setTruckCategories([])}
+                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
+                    truckCategories.length === 0
+                      ? "bg-slate-900 text-white border-slate-900"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
+                  }`}
+                >
+                  All
+                </button>
+                {TRUCK_CATEGORIES.map((label) => {
+                  const value = truckCategoryMap[label];
+                  return (
+                    <button
+                      key={value}
+                      onClick={() =>
+                        setTruckCategories((prev) =>
+                          prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
+                        )
+                      }
+                      className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
+                        truckCategories.includes(value)
+                          ? "bg-slate-900 text-white border-slate-900"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="text-sm font-semibold text-gray-600 mr-2">Category:</span>
+                <button
+                  onClick={() => setPartCategories([])}
+                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
+                    partCategories.length === 0
+                      ? "bg-slate-900 text-white border-slate-900"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
+                  }`}
+                >
+                  All
+                </button>
+                {PART_CATEGORIES.map((label) => {
+                  const value = partCategoryMap[label];
+                  return (
+                    <button
+                      key={value}
+                      onClick={() =>
+                        setPartCategories((prev) =>
+                          prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
+                        )
+                      }
+                      className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
+                        partCategories.includes(value)
+                          ? "bg-slate-900 text-white border-slate-900"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
 
-            {/* Condition Filter */}
-            <select
-              value={partCondition}
-              onChange={(e) => setPartCondition(e.target.value)}
-              className="px-4 py-2 rounded-lg border-2 border-gray-200 bg-white text-gray-700 font-medium focus:border-slate-900 focus:outline-none"
-            >
-              {PART_CONDITIONS.map((cond) => (
-                <option key={cond} value={cond}>
-                  {cond === "All" ? "All Conditions" : cond}
-                </option>
-              ))}
-            </select>
-          </>
-        )}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="text-sm font-semibold text-gray-600 mr-2">Condition:</span>
+                <button
+                  onClick={() => setPartConditions([])}
+                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
+                    partConditions.length === 0
+                      ? "bg-slate-900 text-white border-slate-900"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
+                  }`}
+                >
+                  All
+                </button>
+                {PART_CONDITIONS.map((label) => {
+                  const value = partConditionMap[label];
+                  return (
+                    <button
+                      key={value}
+                      onClick={() =>
+                        setPartConditions((prev) =>
+                          prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
+                        )
+                      }
+                      className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
+                        partConditions.includes(value)
+                          ? "bg-slate-900 text-white border-slate-900"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )}
 
           {/* Clear Filters */}
-          <button
-            onClick={() => {
-              setTruckMake("All");
-              setTruckCategory("All");
-              setPartCategory("All");
-              setPartCondition("All");
-              setSearchQuery("");
-            }}
-            className="px-4 py-2 rounded-lg border-2 border-orange-500 text-orange-500 font-medium hover:bg-orange-500 hover:text-white transition-colors"
-          >
-            Clear Filters
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={() => {
+                setTruckMakes([]);
+                setTruckCategories([]);
+                setPartCategories([]);
+                setPartConditions([]);
+                setSearchQuery("");
+              }}
+              className="px-4 py-2 rounded-lg border-2 border-orange-500 text-orange-500 font-medium hover:bg-orange-500 hover:text-white transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
         </div>
       </div>
 
@@ -272,7 +398,7 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {displayedItems.length > 0 ? (
-          displayedItems.map((item) =>
+          visibleItems.map((item) =>
             activeTab === "trucks" ? (
               <TruckCard key={item._id} truck={item as Truck} />
             ) : (
@@ -286,6 +412,13 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
           </div>
         )}
       </div>
+
+      {displayedItems.length > 0 && visibleCount < displayedItems.length && (
+        <div className="flex justify-center py-8 text-gray-500">
+          Loading more items...
+        </div>
+      )}
+      <div ref={loadMoreRef} className="h-8" />
     </div>
   );
 }

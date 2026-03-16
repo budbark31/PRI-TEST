@@ -22,6 +22,8 @@ export default function PromoVideo() {
       <video
         ref={videoRef}
         src="/PennRockPromoNov25.mp4"
+        poster="/PRI_logo_fromFacebook.jpg"
+        preload="metadata"
         autoPlay
         loop
         muted
