@@ -38,6 +38,15 @@ interface UnifiedGridProps {
   parts: Part[];
 }
 
+interface FilterSection {
+  key: string;
+  title: string;
+  options: { label: string; value: string }[];
+  selectedValues: string[];
+  onToggle: (value: string) => void;
+  onClear: () => void;
+}
+
 // Constants
 const TRUCK_MAKES = ["Kenworth", "Peterbilt", "Mack", "Ford", "Freightliner", "International", "Other"];
 const TRUCK_CATEGORIES = ["Dump Trucks", "Day Cabs", "Heavy Equipment", "Trailers"];
@@ -104,6 +113,13 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
   const [partCategories, setPartCategories] = useState<string[]>([]);
   const [partConditions, setPartConditions] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    "truck-make": true,
+    "truck-category": true,
+    "part-category": true,
+    "part-condition": true,
+  });
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
@@ -172,10 +188,85 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
     return () => observer.disconnect();
   }, [loadMore, visibleCount, displayedItems.length]);
 
+  const activeFilterCount =
+    activeTab === "trucks"
+      ? truckMakes.length + truckCategories.length
+      : partCategories.length + partConditions.length;
+
+  const clearAllFilters = () => {
+    setTruckMakes([]);
+    setTruckCategories([]);
+    setPartCategories([]);
+    setPartConditions([]);
+    setSearchQuery("");
+  };
+
+  const toggleSection = (sectionKey: string) => {
+    setExpandedSections((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
+  };
+
+  const filterSections = useMemo<FilterSection[]>(() => {
+    if (activeTab === "trucks") {
+      return [
+        {
+          key: "truck-make",
+          title: "Make",
+          options: TRUCK_MAKES.map((make) => ({ label: make, value: make })),
+          selectedValues: truckMakes,
+          onToggle: (value) => {
+            setTruckMakes((prev) =>
+              prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+            );
+          },
+          onClear: () => setTruckMakes([]),
+        },
+        {
+          key: "truck-category",
+          title: "Category",
+          options: TRUCK_CATEGORIES.map((label) => ({ label, value: truckCategoryMap[label] })),
+          selectedValues: truckCategories,
+          onToggle: (value) => {
+            setTruckCategories((prev) =>
+              prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+            );
+          },
+          onClear: () => setTruckCategories([]),
+        },
+      ];
+    }
+
+    return [
+      {
+        key: "part-category",
+        title: "Category",
+        options: PART_CATEGORIES.map((label) => ({ label, value: partCategoryMap[label] })),
+        selectedValues: partCategories,
+        onToggle: (value) => {
+          setPartCategories((prev) =>
+            prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+          );
+        },
+        onClear: () => setPartCategories([]),
+      },
+      {
+        key: "part-condition",
+        title: "Condition",
+        options: PART_CONDITIONS.map((label) => ({ label, value: partConditionMap[label] })),
+        selectedValues: partConditions,
+        onToggle: (value) => {
+          setPartConditions((prev) =>
+            prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+          );
+        },
+        onClear: () => setPartConditions([]),
+      },
+    ];
+  }, [activeTab, truckMakes, truckCategories, partCategories, partConditions]);
+
   return (
     <div>
       {/* Header Section with Toggle, Stats & Search */}
-      <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 mb-8">
+      <div className="bg-white border-2 border-slate-900 rounded-none p-6 mb-8">
         {/* Quick Stats */}
         <div className="flex justify-center gap-8 mb-4">
           <div className="text-center">
@@ -184,19 +275,19 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
           </div>
           <div className="w-px bg-gray-300"></div>
           <div className="text-center">
-            <span className="text-2xl font-bold text-orange-500">{availableParts}</span>
+            <span className="text-2xl font-bold text-slate-900">{availableParts}</span>
             <span className="text-gray-500 ml-2">Parts in Stock</span>
           </div>
         </div>
 
         {/* Master Toggle */}
         <div className="flex justify-center mb-4">
-          <div className="inline-flex bg-white rounded-xl p-1.5 shadow-sm border border-gray-200">
+          <div className="inline-flex bg-white rounded-none p-1.5 border-2 border-slate-900">
             <button
               onClick={() => setActiveTab("trucks")}
-              className={`px-8 py-4 rounded-lg font-bold text-base transition-all ${
+              className={`px-8 py-4 rounded-none font-bold uppercase tracking-widest text-xs transition-all border-2 border-transparent ${
                 activeTab === "trucks"
-                  ? "bg-slate-900 text-white shadow-md"
+                  ? "bg-slate-900 text-white shadow-[4px_4px_0_#0f172a]"
                   : "text-gray-600 hover:text-slate-900 hover:bg-gray-50"
               }`}
             >
@@ -204,9 +295,9 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
             </button>
             <button
               onClick={() => setActiveTab("parts")}
-              className={`px-8 py-4 rounded-lg font-bold text-base transition-all ${
+              className={`px-8 py-4 rounded-none font-bold uppercase tracking-widest text-xs transition-all border-2 border-transparent ${
                 activeTab === "parts"
-                  ? "bg-slate-900 text-white shadow-md"
+                  ? "bg-slate-900 text-white shadow-[4px_4px_0_#0f172a]"
                   : "text-gray-600 hover:text-slate-900 hover:bg-gray-50"
               }`}
             >
@@ -215,178 +306,125 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="flex justify-center mb-4">
-          <div className="relative w-full max-w-md">
-            <input
-              type="text"
-              placeholder={activeTab === "trucks" ? "Search trucks..." : "Search parts..."}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 pl-10 rounded-lg border-2 border-gray-200 bg-white text-gray-700 font-medium focus:border-slate-900 focus:outline-none"
-            />
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+        {/* Search + Filter Menu */}
+        <div className="mx-auto w-full max-w-5xl">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder={activeTab === "trucks" ? "Search trucks..." : "Search parts..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-3 pl-10 rounded-none border-2 border-slate-900 bg-white text-slate-900 font-medium focus:outline-none"
+              />
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsFilterMenuOpen((prev) => !prev)}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-none border-2 border-slate-900 bg-white text-slate-900 font-bold uppercase tracking-widest text-xs hover:bg-slate-900 hover:text-white transition-colors"
+                aria-expanded={isFilterMenuOpen}
+                aria-controls="inventory-filter-menu"
+              >
+                {isFilterMenuOpen ? "Hide Filters" : "Show Filters"}
+                <span className="inline-flex h-5 min-w-5 items-center justify-center border border-current px-1 text-[10px] leading-none">
+                  {activeFilterCount}
+                </span>
+              </button>
+
+              {(activeFilterCount > 0 || searchQuery) && (
+                <button
+                  onClick={clearAllFilters}
+                  className="px-4 py-3 rounded-none border-2 border-slate-200 bg-white text-slate-700 font-bold uppercase tracking-widest text-xs hover:border-slate-900 hover:text-slate-900 transition-colors"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Filters */}
-        <div className="flex flex-col gap-4 w-full">
-          {activeTab === "trucks" ? (
-            <>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-sm font-semibold text-gray-600 mr-2">Make:</span>
-                <button
-                  onClick={() => setTruckMakes([])}
-                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
-                    truckMakes.length === 0
-                      ? "bg-slate-900 text-white border-slate-900"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
-                  }`}
-                >
-                  All
-                </button>
-                {TRUCK_MAKES.map((make) => (
-                  <button
-                    key={make}
-                    onClick={() =>
-                      setTruckMakes((prev) =>
-                        prev.includes(make) ? prev.filter((m) => m !== make) : [...prev, make]
-                      )
-                    }
-                    className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
-                      truckMakes.includes(make)
-                        ? "bg-slate-900 text-white border-slate-900"
-                        : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
-                    }`}
-                  >
-                    {make}
-                  </button>
-                ))}
-              </div>
+          {isFilterMenuOpen && (
+            <div id="inventory-filter-menu" className="mt-4 border-2 border-slate-900 bg-slate-50 p-4 md:p-5">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600">
+                Filter Menu ({activeFilterCount} active)
+              </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-sm font-semibold text-gray-600 mr-2">Category:</span>
-                <button
-                  onClick={() => setTruckCategories([])}
-                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
-                    truckCategories.length === 0
-                      ? "bg-slate-900 text-white border-slate-900"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
-                  }`}
-                >
-                  All
-                </button>
-                {TRUCK_CATEGORIES.map((label) => {
-                  const value = truckCategoryMap[label];
+              <div className="grid gap-3 md:grid-cols-2">
+                {filterSections.map((section) => {
+                  const isExpanded = expandedSections[section.key];
+                  const selectedCount = section.selectedValues.length;
+
                   return (
-                    <button
-                      key={value}
-                      onClick={() =>
-                        setTruckCategories((prev) =>
-                          prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
-                        )
-                      }
-                      className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
-                        truckCategories.includes(value)
-                          ? "bg-slate-900 text-white border-slate-900"
-                          : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
-                      }`}
-                    >
-                      {label}
-                    </button>
+                    <div key={section.key} className="border-2 border-slate-200 bg-white">
+                      <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-3 py-2">
+                        <button
+                          onClick={() => toggleSection(section.key)}
+                          className="inline-flex items-center gap-2 text-left"
+                          aria-expanded={isExpanded}
+                        >
+                          <span className="text-xs font-bold uppercase tracking-widest text-slate-900">
+                            {section.title}
+                          </span>
+                          {selectedCount > 0 && (
+                            <span className="border border-slate-900 px-1 py-0.5 text-[10px] font-bold text-slate-900">
+                              {selectedCount}
+                            </span>
+                          )}
+                        </button>
+
+                        <button
+                          onClick={section.onClear}
+                          className="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-slate-900"
+                        >
+                          Clear
+                        </button>
+                      </div>
+
+                      {isExpanded && (
+                        <ul className="max-h-56 overflow-y-auto p-2">
+                          <li>
+                            <button
+                              onClick={section.onClear}
+                              className={`flex w-full items-center justify-between px-2 py-2 text-xs font-medium uppercase tracking-wider transition-colors ${
+                                selectedCount === 0
+                                  ? "bg-slate-900 text-white"
+                                  : "text-slate-700 hover:bg-slate-100"
+                              }`}
+                            >
+                              <span>All</span>
+                              {selectedCount === 0 && <span>✓</span>}
+                            </button>
+                          </li>
+
+                          {section.options.map((option) => {
+                            const isSelected = section.selectedValues.includes(option.value);
+                            return (
+                              <li key={option.value}>
+                                <button
+                                  onClick={() => section.onToggle(option.value)}
+                                  className={`flex w-full items-center justify-between px-2 py-2 text-left text-xs font-medium uppercase tracking-wider transition-colors ${
+                                    isSelected
+                                      ? "bg-slate-900 text-white"
+                                      : "text-slate-700 hover:bg-slate-100"
+                                  }`}
+                                >
+                                  <span>{option.label}</span>
+                                  {isSelected && <span>✓</span>}
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+                    </div>
                   );
                 })}
               </div>
-            </>
-          ) : (
-            <>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-sm font-semibold text-gray-600 mr-2">Category:</span>
-                <button
-                  onClick={() => setPartCategories([])}
-                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
-                    partCategories.length === 0
-                      ? "bg-slate-900 text-white border-slate-900"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
-                  }`}
-                >
-                  All
-                </button>
-                {PART_CATEGORIES.map((label) => {
-                  const value = partCategoryMap[label];
-                  return (
-                    <button
-                      key={value}
-                      onClick={() =>
-                        setPartCategories((prev) =>
-                          prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
-                        )
-                      }
-                      className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
-                        partCategories.includes(value)
-                          ? "bg-slate-900 text-white border-slate-900"
-                          : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-sm font-semibold text-gray-600 mr-2">Condition:</span>
-                <button
-                  onClick={() => setPartConditions([])}
-                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
-                    partConditions.length === 0
-                      ? "bg-slate-900 text-white border-slate-900"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
-                  }`}
-                >
-                  All
-                </button>
-                {PART_CONDITIONS.map((label) => {
-                  const value = partConditionMap[label];
-                  return (
-                    <button
-                      key={value}
-                      onClick={() =>
-                        setPartConditions((prev) =>
-                          prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
-                        )
-                      }
-                      className={`px-3 py-1 rounded-full text-sm font-semibold border transition-colors ${
-                        partConditions.includes(value)
-                          ? "bg-slate-900 text-white border-slate-900"
-                          : "bg-white text-gray-600 border-gray-200 hover:border-slate-900 hover:text-slate-900"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-            </>
+            </div>
           )}
-
-          {/* Clear Filters */}
-          <div className="flex justify-center">
-            <button
-              onClick={() => {
-                setTruckMakes([]);
-                setTruckCategories([]);
-                setPartCategories([]);
-                setPartConditions([]);
-                setSearchQuery("");
-              }}
-              className="px-4 py-2 rounded-lg border-2 border-orange-500 text-orange-500 font-medium hover:bg-orange-500 hover:text-white transition-colors"
-            >
-              Clear Filters
-            </button>
-          </div>
         </div>
       </div>
 
@@ -406,7 +444,7 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
             )
           )
         ) : (
-          <div className="col-span-full text-center py-20 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="col-span-full text-center py-20 bg-white rounded-none border-2 border-slate-900">
             <p className="text-xl text-gray-600 font-bold">No items found.</p>
             <p className="text-gray-500 mt-2">Try adjusting your filters.</p>
           </div>
@@ -444,8 +482,8 @@ function TruckCard({ truck }: { truck: Truck }) {
 
   return (
     <div
-      className={`group border rounded-lg overflow-hidden transition-all bg-white flex flex-col ${
-        isSold ? "border-gray-200 opacity-80" : "border-gray-200 hover:shadow-lg hover:-translate-y-1"
+      className={`group border-2 rounded-none overflow-hidden transition-all bg-white flex flex-col ${
+        isSold ? "border-slate-500 opacity-80" : "border-slate-900 hover:shadow-[6px_6px_0_#0f172a] hover:-translate-y-1"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -475,23 +513,23 @@ function TruckCard({ truck }: { truck: Truck }) {
 
         {!isSold && images.length > 1 && isHovered && (
           <>
-            <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-10 hover:bg-black/70">
+            <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-none border border-white/30 z-10 hover:bg-black/70">
               &#8249;
             </button>
-            <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-10 hover:bg-black/70">
+            <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-none border border-white/30 z-10 hover:bg-black/70">
               &#8250;
             </button>
             <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10">
               {images.map((_, idx) => (
-                <div key={idx} className={`h-1.5 w-1.5 rounded-full shadow-sm ${idx === currentImageIndex ? "bg-white" : "bg-white/50"}`} />
+                <div key={idx} className={`h-1.5 w-1.5 rounded-none border border-white/30 ${idx === currentImageIndex ? "bg-white" : "bg-white/50"}`} />
               ))}
             </div>
           </>
         )}
 
         {!isSold && (
-          <div className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded uppercase shadow-sm z-10 ${
-            truck.status === "pending" ? "bg-orange-500 text-white" : "bg-green-600 text-white"
+          <div className={`absolute top-2 right-2 text-xs font-bold uppercase tracking-widest px-2 py-1 rounded-none border-2 border-slate-900 z-10 ${
+            truck.status === "pending" ? "bg-slate-900 text-white" : "bg-white text-slate-900"
           }`}>
             {truck.status === "pending" ? "Pending Sale" : "Available"}
           </div>
@@ -501,7 +539,7 @@ function TruckCard({ truck }: { truck: Truck }) {
       <Link href={`/inventory/${truck.slug}`} className="flex flex-col flex-grow">
         <div className="p-4 flex flex-col flex-grow">
           <div className="mb-2">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <span className="inline-block bg-gray-100 border-2 border-slate-900 px-2 py-1 text-xs font-bold text-slate-900 uppercase tracking-widest">
               {formatCategory(truck.category)}
             </span>
           </div>
@@ -515,12 +553,12 @@ function TruckCard({ truck }: { truck: Truck }) {
           </p>
 
           <div className="mt-auto flex items-center justify-between border-t pt-4">
-            <span className={`text-2xl font-bold ${isSold ? "text-gray-400" : "text-blue-900"}`}>
+            <span className={`text-2xl font-bold ${isSold ? "text-gray-400" : "text-slate-900"}`}>
               {truck.price ? `$${truck.price.toLocaleString()}` : "Call for Price"}
             </span>
 
             {!isSold && (
-              <span className="text-sm font-medium text-gray-600 group-hover:text-blue-900">
+              <span className="text-sm font-medium text-gray-600 group-hover:text-slate-900">
                 View Details &rarr;
               </span>
             )}
@@ -545,8 +583,8 @@ function PartCard({ part }: { part: Part }) {
   return (
     <Link
       href={`/parts/${part.slug}`}
-      className={`group border rounded-lg overflow-hidden transition-all bg-white flex flex-col ${
-        isSold ? "border-gray-200 opacity-80" : "border-gray-200 hover:shadow-lg hover:-translate-y-1"
+      className={`group border-2 rounded-none overflow-hidden transition-all bg-white flex flex-col ${
+        isSold ? "border-slate-500 opacity-80" : "border-slate-900 hover:shadow-[6px_6px_0_#0f172a] hover:-translate-y-1"
       }`}
     >
       <div className="relative h-64 w-full bg-gray-100">
@@ -575,8 +613,8 @@ function PartCard({ part }: { part: Part }) {
         )}
 
         {!isSold && (
-          <div className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded uppercase shadow-sm z-10 ${
-            isOutOfStock ? "bg-orange-500 text-white" : "bg-green-600 text-white"
+          <div className={`absolute top-2 right-2 text-xs font-bold uppercase tracking-widest px-2 py-1 rounded-none border-2 border-slate-900 z-10 ${
+            isOutOfStock ? "bg-slate-900 text-white" : "bg-white text-slate-900"
           }`}>
             {isOutOfStock ? "Out of Stock" : "Available"}
           </div>
@@ -585,7 +623,7 @@ function PartCard({ part }: { part: Part }) {
 
       <div className="p-4 flex flex-col flex-grow">
         <div className="mb-2">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+          <span className="inline-block bg-gray-100 border-2 border-slate-900 px-2 py-1 text-xs font-bold text-slate-900 uppercase tracking-widest">
             {formatCategory(part.category)}
           </span>
         </div>
@@ -602,12 +640,12 @@ function PartCard({ part }: { part: Part }) {
         </p>
 
         <div className="mt-auto flex items-center justify-between border-t pt-4">
-          <span className={`text-2xl font-bold ${isSold ? "text-gray-400" : "text-blue-900"}`}>
+          <span className={`text-2xl font-bold ${isSold ? "text-gray-400" : "text-slate-900"}`}>
             {part.price ? `$${part.price.toLocaleString()}` : "Call for Price"}
           </span>
 
           {!isSold && (
-            <span className="text-sm font-medium text-gray-600 group-hover:text-blue-900">
+            <span className="text-sm font-medium text-gray-600 group-hover:text-slate-900">
               View Details &rarr;
             </span>
           )}

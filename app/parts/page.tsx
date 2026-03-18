@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import FilterBar from "@/app/components/FilterBar";
 import PartsInfiniteGrid from "@/app/components/PartsInfiniteGrid";
+import CheckoutNotice from "@/app/components/CheckoutNotice";
 
 export const metadata: Metadata = {
   title: "Heavy Equipment Parts | Penn Rock Industries",
@@ -35,11 +36,19 @@ export default async function PartsPage() {
 
   return (
     <main className="min-h-screen bg-white pb-20 pt-16 md:pt-20">
+      <div className="bg-slate-900 py-10 mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl font-black uppercase tracking-widest text-white">Parts Inventory</h1>
+        </div>
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Suspense fallback={null}>
+          <CheckoutNotice />
+        </Suspense>
         
         {/* Header Area */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4 md:mb-0">Parts Inventory</h2>
+          <h2 className="text-sm font-bold uppercase tracking-widest text-slate-900 mb-4 md:mb-0">Available Components And Assemblies</h2>
         </div>
         
         {/* Filter Bar */}

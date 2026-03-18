@@ -18,7 +18,7 @@ export default function PromoVideo() {
   };
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-xl group">
+    <div className="relative rounded-none overflow-hidden border-2 border-slate-900 shadow-[6px_6px_0_#0f172a] group bg-slate-900">
       <video
         ref={videoRef}
         src="/PennRockPromoNov25.mp4"
@@ -34,7 +34,7 @@ export default function PromoVideo() {
       {/* Play/Pause Button - Hidden by default, visible on hover */}
       <button
         onClick={togglePlayPause}
-        className="absolute bottom-4 right-4 p-3 rounded-full bg-black/60 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute bottom-4 right-4 p-3 rounded-none border-2 border-slate-900 bg-orange-500 text-white opacity-0 group-hover:opacity-100 transition-opacity"
         aria-label={isPlaying ? "Pause video" : "Play video"}
       >
         {isPlaying ? (

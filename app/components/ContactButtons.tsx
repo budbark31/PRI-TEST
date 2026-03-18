@@ -25,7 +25,7 @@ export default function ContactButtons({ truckTitle }: ContactProps) {
       <div className="relative">
         <a
           href={`tel:${PHONE_CLEAN}`}
-          className="flex items-center justify-center w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-4 rounded-lg text-lg transition-all shadow-md active:scale-95"
+          className="flex items-center justify-center w-full bg-orange-500 hover:bg-orange-600 text-white border-2 border-slate-900 font-bold uppercase tracking-widest text-sm py-4 rounded-none transition-all shadow-[4px_4px_0_#0f172a] active:scale-95"
           onClick={(e) => {
             // On desktop, we might want to just reveal the number instead of trying to open FaceTime
             if (window.innerWidth > 768) {
@@ -39,7 +39,7 @@ export default function ContactButtons({ truckTitle }: ContactProps) {
         
         {/* Desktop Helper: Shows number if they clicked "Call" on a computer */}
         {showPhone && (
-          <div className="absolute top-full left-0 right-0 mt-2 text-center text-sm text-gray-500 bg-gray-50 py-2 border rounded shadow-sm">
+          <div className="absolute top-full left-0 right-0 mt-2 text-center text-xs font-bold uppercase tracking-widest text-slate-900 bg-white py-2 border-2 border-slate-900 rounded-none shadow-sm">
             Dial: <span className="font-bold text-gray-900 select-all">{PHONE_NUMBER}</span>
           </div>
         )}
@@ -48,7 +48,7 @@ export default function ContactButtons({ truckTitle }: ContactProps) {
       {/* 2. Secondary Email Button */}
       <a
         href={`mailto:${EMAIL_ADDRESS}?subject=${emailSubject}&body=${emailBody}`}
-        className="flex items-center justify-center w-full bg-white hover:bg-gray-50 text-blue-900 border-2 border-blue-900 font-bold py-3 rounded-lg text-lg transition-colors"
+        className="flex items-center justify-center w-full bg-white hover:bg-slate-900 text-slate-900 border-2 border-slate-900 font-bold uppercase tracking-widest text-sm py-3 rounded-none transition-colors hover:text-white"
       >
         ✉️ Email Sales
       </a>

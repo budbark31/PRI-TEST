@@ -10,7 +10,7 @@ export default function StudioLogo(props: any) {
         alt="Penn Rock" 
         width={25} 
         height={25} 
-        className="rounded-full object-cover"
+        className="rounded-none object-cover"
       />
       <>{renderDefault(props)}</>
     </div>

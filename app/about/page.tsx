@@ -75,10 +75,10 @@ export default function AboutPage() {
             {teamMembers.map((member, index) => (
               <div 
                 key={index}
-                className="bg-white border border-gray-200 rounded-2xl p-8 text-center shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white border-2 border-slate-900 rounded-none p-8 text-center hover:shadow-[4px_4px_0_#0f172a] transition-shadow"
               >
                 {/* Headshot Placeholder */}
-                <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center">
+                <div className="w-32 h-32 mx-auto mb-6 rounded-none bg-gray-100 border-2 border-slate-900 flex items-center justify-center">
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     fill="none" 
@@ -101,7 +101,7 @@ export default function AboutPage() {
                 </h3>
                 
                 {/* Role - Easy to find and edit */}
-                <p className="text-orange-500 font-semibold uppercase tracking-wide text-sm">
+                <p className="text-slate-900 font-bold uppercase tracking-widest text-xs">
                   {member.role}
                 </p>
               </div>

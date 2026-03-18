@@ -75,7 +75,7 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
 
   if (parts.length === 0) {
     return (
-      <div className="col-span-full text-center py-20 bg-gray-50 rounded-lg border border-gray-100">
+      <div className="col-span-full text-center py-20 bg-white rounded-none border-2 border-slate-900">
         <p className="text-xl text-gray-600 font-bold">No parts available yet.</p>
         <p className="text-gray-500 mt-2">Check back soon for new inventory.</p>
       </div>
@@ -93,8 +93,8 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
             <Link
               href={`/parts/${part.slug}`}
               key={part._id}
-              className={`group border rounded-lg overflow-hidden transition-all bg-white flex flex-col ${
-                isSold ? "border-gray-200 opacity-80" : "border-gray-200 hover:shadow-lg hover:-translate-y-1"
+              className={`group border-2 rounded-none overflow-hidden transition-all bg-white flex flex-col ${
+                isSold ? "border-slate-500 opacity-80" : "border-slate-900 hover:shadow-[6px_6px_0_#0f172a] hover:-translate-y-1"
               }`}
             >
               {/* Image Area */}
@@ -126,8 +126,8 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
 
                 {/* STATUS BADGE */}
                 {!isSold && (
-                  <div className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded uppercase shadow-sm z-10 ${
-                    isOutOfStock ? "bg-orange-500 text-white" : "bg-green-600 text-white"
+                  <div className={`absolute top-2 right-2 text-xs font-bold uppercase tracking-widest px-2 py-1 rounded-none border-2 border-slate-900 z-10 ${
+                    isOutOfStock ? "bg-slate-900 text-white" : "bg-white text-slate-900"
                   }`}>
                     {isOutOfStock ? "Out of Stock" : "Available"}
                   </div>
@@ -138,7 +138,7 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
               <div className="p-4 flex flex-col flex-grow">
                 {/* Category */}
                 <div className="mb-2">
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <span className="inline-block bg-gray-100 border-2 border-slate-900 px-2 py-1 text-xs font-bold text-slate-900 uppercase tracking-widest">
                     {formatCategory(part.category)}
                   </span>
                 </div>
@@ -158,12 +158,12 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
 
                 {/* Price & Button */}
                 <div className="mt-auto flex items-center justify-between border-t pt-4">
-                  <span className={`text-2xl font-bold ${isSold ? "text-gray-400" : "text-blue-900"}`}>
+                  <span className={`text-2xl font-bold ${isSold ? "text-gray-400" : "text-slate-900"}`}>
                     {part.price ? `$${part.price.toLocaleString()}` : "Call for Price"}
                   </span>
 
                   {!isSold && (
-                    <span className="text-sm font-medium text-gray-600 group-hover:text-blue-900">
+                    <span className="text-sm font-medium text-gray-600 group-hover:text-slate-900">
                       View Details &rarr;
                     </span>
                   )}

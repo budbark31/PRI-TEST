@@ -39,8 +39,8 @@ export default function InventoryCard({ truck }: { truck: TruckProps }) {
 
   return (
     <div
-      className={`group border rounded-lg overflow-hidden transition-all bg-white flex flex-col ${
-        isSold ? "border-gray-200 opacity-80" : "border-gray-200 hover:shadow-lg hover:-translate-y-1"
+      className={`group border-2 rounded-none overflow-hidden transition-all bg-white flex flex-col ${
+        isSold ? "border-slate-500 opacity-80" : "border-slate-900 hover:shadow-[6px_6px_0_#0f172a] hover:-translate-y-1"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -75,15 +75,15 @@ export default function InventoryCard({ truck }: { truck: TruckProps }) {
         {/* ARROWS (Hide if sold) */}
         {!isSold && images.length > 1 && isHovered && (
           <>
-            <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-10 hover:bg-black/70">
+            <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-none border border-white/30 z-10 hover:bg-black/70">
               &#8249;
             </button>
-            <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full z-10 hover:bg-black/70">
+            <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-none border border-white/30 z-10 hover:bg-black/70">
               &#8250;
             </button>
             <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10">
               {images.map((_, idx) => (
-                <div key={idx} className={`h-1.5 w-1.5 rounded-full shadow-sm ${idx === currentImageIndex ? "bg-white" : "bg-white/50"}`} />
+                <div key={idx} className={`h-1.5 w-1.5 rounded-none border border-white/30 ${idx === currentImageIndex ? "bg-white" : "bg-white/50"}`} />
               ))}
             </div>
           </>
@@ -91,8 +91,8 @@ export default function InventoryCard({ truck }: { truck: TruckProps }) {
 
         {/* STATUS BADGE (Only show 'Available' or 'Pending', hide 'Sold' since we have the big stamp) */}
         {!isSold && (
-          <div className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded uppercase shadow-sm z-10 ${
-            truck.status === 'pending' ? 'bg-orange-500 text-white' : 'bg-green-600 text-white'
+          <div className={`absolute top-2 right-2 text-xs font-bold uppercase tracking-widest px-2 py-1 rounded-none border-2 border-slate-900 z-10 ${
+            truck.status === 'pending' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'
           }`}>
             {truck.status === 'pending' ? 'Pending Sale' : 'Available'}
           </div>
@@ -103,7 +103,7 @@ export default function InventoryCard({ truck }: { truck: TruckProps }) {
       <Link href={`/inventory/${truck.slug}`} className="flex flex-col flex-grow">
         <div className="p-4 flex flex-col flex-grow">
           <div className="mb-2">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <span className="inline-block bg-gray-100 border-2 border-slate-900 px-2 py-1 text-xs font-bold text-slate-900 uppercase tracking-widest">
               {truck.category}
             </span>
           </div>
@@ -117,12 +117,12 @@ export default function InventoryCard({ truck }: { truck: TruckProps }) {
           </p>
 
           <div className="mt-auto flex items-center justify-between border-t pt-4">
-            <span className={`text-2xl font-bold ${isSold ? "text-gray-400" : "text-blue-900"}`}>
+            <span className={`text-2xl font-bold ${isSold ? "text-gray-400" : "text-slate-900"}`}>
               {truck.price ? `$${truck.price.toLocaleString()}` : "Call for Price"}
             </span>
             
             {!isSold && (
-              <span className="text-sm font-medium text-gray-600 group-hover:text-blue-900">
+              <span className="text-sm font-medium text-gray-600 group-hover:text-slate-900">
                 View Details &rarr;
               </span>
             )}

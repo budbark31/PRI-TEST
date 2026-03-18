@@ -84,7 +84,7 @@ export default async function TruckPage({ params }: Props) {
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-12 bg-white min-h-screen">
-      <Link href="/" className="text-blue-900 font-bold hover:underline mb-6 inline-block">
+      <Link href="/" className="text-slate-900 font-bold uppercase tracking-widest text-xs hover:underline mb-6 inline-block">
         &larr; Back to Inventory
       </Link>
 
@@ -95,7 +95,7 @@ export default async function TruckPage({ params }: Props) {
           {truck.images && truck.images.length > 0 ? (
             <ImageGallery images={truck.images} title={truck.title} />
           ) : (
-            <div className="bg-gray-100 h-64 flex items-center justify-center rounded-lg text-gray-400">
+            <div className="bg-gray-100 h-64 flex items-center justify-center rounded-sm text-gray-400">
               No Images Available
             </div>
           )}
@@ -104,7 +104,7 @@ export default async function TruckPage({ params }: Props) {
         {/* Details */}
         <div className="flex flex-col h-full">
           {truck.category && (
-            <span className="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full font-bold uppercase tracking-wide mb-4 w-fit">
+            <span className="inline-block bg-gray-100 border-2 border-slate-900 text-xs px-2 py-1 rounded-none font-bold uppercase tracking-widest text-slate-900 mb-4 w-fit">
               {truck.category}
             </span>
           )}
@@ -114,11 +114,11 @@ export default async function TruckPage({ params }: Props) {
             {truck.year} {truck.make} {truck.model} • {truck.hoursOrMileage}
           </p>
 
-          <div className="bg-white p-6 rounded-lg mb-8 border-2 border-gray-100 shadow-sm">
+          <div className="bg-white p-6 rounded-none mb-8 border-2 border-slate-900">
             <p className="text-3xl font-bold text-gray-900 mb-1">
               {truck.price ? `$${truck.price.toLocaleString()}` : "Call for Price"}
             </p>
-            <p className={`text-sm font-bold uppercase tracking-wide ${truck.status === 'sold' ? 'text-red-600' : 'text-green-600'}`}>
+            <p className={`text-xs font-bold uppercase tracking-widest ${truck.status === 'sold' ? 'text-red-600' : 'text-slate-900'}`}>
               Status: {truck.status}
             </p>
           </div>

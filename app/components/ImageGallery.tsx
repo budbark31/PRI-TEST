@@ -55,7 +55,7 @@ export default function ImageGallery({ images, title }: GalleryProps) {
       <div className="flex flex-col gap-4">
         {/* 1. Main Image (Click to Open Lightbox) */}
         <div 
-          className="relative aspect-video w-full bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-sm cursor-zoom-in group"
+          className="relative aspect-video w-full bg-gray-100 rounded-none overflow-hidden border-2 border-slate-900 shadow-[4px_4px_0_#0f172a] cursor-zoom-in group"
           onClick={openLightbox}
         >
           <Image
@@ -69,7 +69,7 @@ export default function ImageGallery({ images, title }: GalleryProps) {
           
           {/* Zoom Hint Icon (Appears on Hover) */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-             <span className="opacity-0 group-hover:opacity-100 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-bold backdrop-blur-sm transition-opacity">
+             <span className="opacity-0 group-hover:opacity-100 bg-slate-900 text-white px-3 py-1 rounded-none text-xs font-bold uppercase tracking-widest transition-opacity border border-white/20">
                Click to Expand 🔍
              </span>
           </div>
@@ -82,10 +82,10 @@ export default function ImageGallery({ images, title }: GalleryProps) {
               <button
                 key={index}
                 onClick={() => setSelectedImage(img)}
-                className={`relative h-20 w-full rounded-md overflow-hidden border-2 transition-all ${
+                className={`relative h-20 w-full rounded-none overflow-hidden border-2 transition-all ${
                   selectedImage === img
-                    ? "border-blue-900 ring-2 ring-blue-900 ring-offset-1"
-                    : "border-transparent hover:border-gray-300 opacity-70 hover:opacity-100"
+                    ? "border-slate-900 shadow-[3px_3px_0_#0f172a]"
+                    : "border-gray-300 hover:border-slate-900 opacity-70 hover:opacity-100"
                 }`}
               >
                 <Image

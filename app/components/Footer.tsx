@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useEmailSignup } from "@/app/components/EmailSignupProvider";
 
 export default function Footer() {
+  const { openSignup } = useEmailSignup();
+
   return (
     <footer className="bg-slate-900 text-white border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
@@ -74,6 +79,15 @@ export default function Footer() {
                 <Link href="/about" className="hover:text-white transition-colors">
                   About Us
                 </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={openSignup}
+                  className="border-2 border-slate-900 bg-orange-500 px-3 py-1 text-white font-bold uppercase tracking-widest text-xs hover:bg-orange-600 transition-colors"
+                >
+                  Join Email List
+                </button>
               </li>
             </ul>
           </div>

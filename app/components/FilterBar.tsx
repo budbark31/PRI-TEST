@@ -35,10 +35,10 @@ export default function FilterBar() {
         <button
           key={cat.value}
           onClick={() => handleFilter(cat.value)}
-          className={`px-4 py-2 rounded-full text-sm font-bold transition-all border-2 ${
+          className={`px-4 py-2 rounded-none text-xs font-bold uppercase tracking-widest transition-all border-2 ${
             currentCategory === cat.value && !isPartsPage
-              ? "bg-blue-900 text-white border-blue-900 shadow-md"
-              : "bg-white text-gray-600 border-gray-200 hover:border-blue-900 hover:text-blue-900"
+              ? "bg-slate-900 text-white border-slate-900 shadow-[4px_4px_0_#0f172a]"
+              : "bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white"
           }`}
         >
           {cat.label}
@@ -47,10 +47,10 @@ export default function FilterBar() {
       {/* Parts links to separate page */}
       <Link
         href="/parts"
-        className={`px-4 py-2 rounded-full text-sm font-bold transition-all border-2 ${
+        className={`px-4 py-2 rounded-none text-xs font-bold uppercase tracking-widest transition-all border-2 ${
           isPartsPage
-            ? "bg-blue-900 text-white border-blue-900 shadow-md"
-            : "bg-white text-gray-600 border-gray-200 hover:border-blue-900 hover:text-blue-900"
+            ? "bg-slate-900 text-white border-slate-900 shadow-[4px_4px_0_#0f172a]"
+            : "bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white"
         }`}
       >
         Parts

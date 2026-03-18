@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import PartPurchaseActions from "@/app/components/PartPurchaseActions";
 
 export const revalidate = 60;
 
@@ -89,7 +90,7 @@ export default async function PartPage({ params }: { params: Promise<{ slug: str
         {/* Back Link */}
         <Link 
           href="/parts" 
-          className="inline-flex items-center text-gray-600 hover:text-blue-900 mb-8 font-medium"
+          className="inline-flex items-center text-slate-900 hover:text-slate-700 mb-8 font-bold uppercase tracking-widest text-xs"
         >
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -100,7 +101,7 @@ export default async function PartPage({ params }: { params: Promise<{ slug: str
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left Column - Image */}
           <div className="relative">
-            <div className="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden shadow-lg">
+            <div className="relative aspect-square bg-gray-100 rounded-sm overflow-hidden shadow-[6px_6px_0_#0f172a]">
               {mainImage ? (
                 <Image
                   src={mainImage}
@@ -134,7 +135,7 @@ export default async function PartPage({ params }: { params: Promise<{ slug: str
                 {part.images.map((img, idx) => (
                   <div 
                     key={idx}
-                    className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 border-gray-200"
+                    className="relative w-20 h-20 flex-shrink-0 rounded-sm overflow-hidden border-2 border-gray-200"
                   >
                     <Image
                       src={img}
@@ -153,10 +154,10 @@ export default async function PartPage({ params }: { params: Promise<{ slug: str
           <div className="flex flex-col">
             {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-4">
-              <span className="bg-gray-100 text-gray-700 text-sm font-semibold px-3 py-1 rounded-full">
+              <span className="bg-gray-100 border-2 border-slate-900 text-xs font-bold uppercase tracking-widest text-slate-900 px-3 py-1 rounded-none">
                 {formatCategory(part.category)}
               </span>
-              <span className="bg-gray-100 text-gray-700 text-sm font-semibold px-3 py-1 rounded-full">
+              <span className="bg-gray-100 border-2 border-slate-900 text-xs font-bold uppercase tracking-widest text-slate-900 px-3 py-1 rounded-none">
                 {formatCondition(part.condition)}
               </span>
             </div>
@@ -168,7 +169,7 @@ export default async function PartPage({ params }: { params: Promise<{ slug: str
 
             {/* Price */}
             <div className="mb-6">
-              <span className={`text-4xl font-bold ${isSold ? "text-gray-400" : "text-blue-900"}`}>
+              <span className={`text-4xl font-bold ${isSold ? "text-gray-400" : "text-slate-900"}`}>
                 {part.price ? `$${part.price.toLocaleString()}` : "Call for Price"}
               </span>
             </div>
@@ -177,8 +178,8 @@ export default async function PartPage({ params }: { params: Promise<{ slug: str
             <div className="mb-6">
               {isAvailable && (
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                  <span className="text-green-700 font-semibold">
+                  <span className="w-3 h-3 bg-slate-900 rounded-none"></span>
+                  <span className="text-slate-900 font-bold uppercase tracking-widest text-xs">
                     In Stock
                     {part.inventoryCount > 0 && ` (${part.inventoryCount} available)`}
                   </span>
@@ -186,14 +187,14 @@ export default async function PartPage({ params }: { params: Promise<{ slug: str
               )}
               {isOutOfStock && (
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
-                  <span className="text-orange-700 font-semibold">Out of Stock</span>
+                  <span className="w-3 h-3 bg-slate-900 rounded-none"></span>
+                  <span className="text-slate-900 font-bold uppercase tracking-widest text-xs">Out of Stock</span>
                 </div>
               )}
               {isSold && (
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-                  <span className="text-red-700 font-semibold">Sold</span>
+                  <span className="w-3 h-3 bg-red-600 rounded-none"></span>
+                  <span className="text-red-700 font-bold uppercase tracking-widest text-xs">Sold</span>
                 </div>
               )}
             </div>
@@ -208,21 +209,18 @@ export default async function PartPage({ params }: { params: Promise<{ slug: str
               </div>
             )}
 
-            {/* CTA Button */}
-            {!isSold && (
-              <Link
-                href="/sell"
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white text-lg font-bold py-4 px-8 rounded-xl shadow-lg transition-colors text-center"
-              >
-                Contact to Purchase
-              </Link>
-            )}
-
-            {isSold && (
-              <div className="w-full bg-gray-200 text-gray-500 text-lg font-bold py-4 px-8 rounded-xl text-center">
-                This Item Has Been Sold
-              </div>
-            )}
+            {/* CTA Actions */}
+            <PartPurchaseActions
+              part={{
+                id: part._id,
+                title: part.title,
+                price: part.price,
+                slug: part.slug,
+                status: part.status,
+                inventoryCount: part.inventoryCount,
+                imageUrl: mainImage,
+              }}
+            />
 
             {/* Contact Info */}
             <p className="text-sm text-gray-500 mt-4 text-center">
