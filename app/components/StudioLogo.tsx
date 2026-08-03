@@ -1,12 +1,7 @@
-import type { JSX } from "react";
+import type { LogoProps } from "sanity";
 import Image from "next/image";
 
-type StudioLogoProps = {
-  renderDefault: (props: StudioLogoProps) => JSX.Element;
-  title?: string;
-};
-
-export default function StudioLogo(props: StudioLogoProps) {
+export default function StudioLogo(props: LogoProps) {
   const { renderDefault } = props;
   return (
     <div className="flex items-center gap-2">
