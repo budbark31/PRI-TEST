@@ -6,11 +6,13 @@ import type { PortableTextBlock } from "@portabletext/types";
 import ImageGallery from "@/app/components/ImageGallery"; 
 import ContactButtons from "@/app/components/ContactButtons";
 import InventoryCard from "@/app/components/InventoryCard"; // Reuse the card!
+import LoadableNutshellForm from "@/app/components/LoadableNutshellForm";
 import { Metadata } from "next";
+import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
 
 // 1. UPDATED QUERY: Fetch the truck + 3 similar ones in the same category
 const TRUCK_QUERY = groq`{
-  "truck": *[_type == "inventory" && slug.current == $slug && !(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')][0]{
+  "truck": *[_type == "inventory" && slug.current == $slug][0]{
     _id,
     title,
     "images": images[].asset->url, 
@@ -18,6 +20,7 @@ const TRUCK_QUERY = groq`{
     year,
     make,
     model,
+    usage,
     hoursOrMileage,
     status,
     description,
@@ -25,7 +28,7 @@ const TRUCK_QUERY = groq`{
     stockDate,
     paperwork
   },
-  "similar": *[_type == "inventory" && slug.current != $slug && category == ^.category && status != "sold" && !(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')][0..2]{
+  "similar": *[_type == "inventory" && slug.current != $slug && category == ^.category && status != "sold"][0..2]{
     _id,
     title,
     "slug": slug.current,
@@ -34,13 +37,17 @@ const TRUCK_QUERY = groq`{
     year,
     make,
     model,
+    usage,
     hoursOrMileage,
     status,
     category
   }
 }`;
 
-export const revalidate = 60;
+export const revalidate = 90;
+
+const SALES_FORM_ID = process.env.NEXT_PUBLIC_NUTSHELL_SALES_FORM_ID;
+const SALES_INSTANCE_ID = process.env.NEXT_PUBLIC_NUTSHELL_SALES_INSTANCE_ID;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -54,6 +61,7 @@ type Truck = {
   year?: number;
   make?: string;
   model?: string;
+  usage?: { value: number; unit: "miles" | "hours" } | null;
   hoursOrMileage?: string;
   status?: string;
   description?: PortableTextBlock[];
@@ -69,29 +77,66 @@ type SimilarTruck = {
   year?: number;
   make?: string;
   model?: string;
+  usage?: { value: number; unit: "miles" | "hours" } | null;
   hoursOrMileage?: string;
   status?: string;
   category?: string;
 };
 
+function formatUsage(truck: Pick<Truck, "usage" | "hoursOrMileage">): string {
+  if (truck.usage && typeof truck.usage.value === "number") {
+    const unitLabel = truck.usage.unit === "hours" ? "hours" : "miles";
+    return `${truck.usage.value.toLocaleString()} ${unitLabel}`;
+  }
+
+  return truck.hoursOrMileage || "";
+}
+
 // SEO Generator (Same as before)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  let data: { title?: string; image?: string } | null = null;
+  let data: { title?: string; image?: string; year?: number; make?: string; model?: string; category?: string } | null = null;
 
   try {
-    data = await client.fetch(groq`*[_type == "inventory" && slug.current == $slug && !(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')][0]{ title, "image": images[0].asset->url, year, make, model }`, { slug });
+    data = await client.fetch(groq`*[_type == "inventory" && slug.current == $slug][0]{ title, "image": images[0].asset->url, year, make, model }`, { slug });
   } catch (error) {
     console.error("Sanity fetch failed for /inventory/[slug] metadata:", error);
   }
   
-  if (!data) return { title: "Truck Not Found" };
+  if (!data) {
+    return {
+      title: "Truck Not Found | Penn Rock Industries",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const titleParts = [data.year, data.make, data.model].filter(Boolean).join(" ");
+  const description = titleParts
+    ? `${titleParts} for sale at Penn Rock Industries.`
+    : "Heavy truck and equipment inventory at Penn Rock Industries.";
 
   return {
-    title: `${data.title} | Penn Rock`,
+    title: `${data.title} | Penn Rock Industries`,
+    description,
+    alternates: {
+      canonical: `/inventory/${slug}`,
+    },
     openGraph: {
+      type: "website",
+      siteName: SITE_NAME,
       title: data.title,
+      description,
+      url: buildAbsoluteUrl(`/inventory/${slug}`),
       images: data.image ? [data.image] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${data.title} | Penn Rock Industries`,
+      description,
+      images: data.image ? [data.image] : [DEFAULT_OG_IMAGE],
     },
   };
 }
@@ -140,7 +185,7 @@ export default async function TruckPage({ params }: Props) {
 
           <h1 className="text-4xl font-extrabold text-gray-900 mb-2 leading-tight">{truck.title}</h1>
           <p className="text-gray-600 text-xl mb-6">
-            {truck.year} {truck.make} {truck.model} • {truck.hoursOrMileage}
+            {truck.year} {truck.make} {truck.model} • {formatUsage(truck)}
           </p>
 
           <div className="bg-white p-6 rounded-none mb-8 border-2 border-slate-900">
@@ -169,24 +214,22 @@ export default async function TruckPage({ params }: Props) {
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Similar Inventory</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {similar.map((simTruck) => (
-              <InventoryCard
-                key={simTruck._id}
-                truck={{
-                  ...simTruck,
-                  images: simTruck.images ?? [],
-                  price: simTruck.price ?? 0,
-                  year: simTruck.year ?? 0,
-                  make: simTruck.make ?? "Unknown",
-                  model: simTruck.model ?? "Unknown",
-                  hoursOrMileage: simTruck.hoursOrMileage ?? "N/A",
-                  status: simTruck.status ?? "available",
-                  category: simTruck.category ?? "other",
-                }}
-              />
+              <InventoryCard key={simTruck._id} truck={simTruck} />
             ))}
           </div>
         </div>
       )}
+
+      <section className="mt-16 border-t border-gray-200 pt-12">
+        <LoadableNutshellForm
+          title="Talk to Sales About This Truck"
+          description="Send a quick note and our sales team will follow up with availability, pricing, and shipping details."
+          buttonLabel="Load Sales Form"
+          formId={SALES_FORM_ID}
+          instanceId={SALES_INSTANCE_ID}
+          targetId={`nutshell-sales-${truck._id}`}
+        />
+      </section>
 
     </main>
   );

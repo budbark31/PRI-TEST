@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEmailSignup } from "@/app/components/EmailSignupProvider";
@@ -16,13 +17,11 @@ export default function Navbar() {
         <div className="flex justify-between items-center">
           
           {/* 1. BIG LOGO */}
-          <Link href="/" className="flex items-center gap-3 group">
-             {/* Icon Placeholder (Uncomment if you add the image later)
+           <Link href="/" className="flex items-center gap-3 group">
              <div className="relative h-12 w-12 rounded-sm overflow-hidden border border-slate-600 hidden md:block">
-                <Image src="/icon.jpg" alt="Logo" fill className="object-cover" />
+               <Image src="/icon.jpg" alt="Penn Rock logo" fill className="object-cover" sizes="48px" priority />
              </div>
-             */}
-             
+
              <div className="flex flex-col">
                {/* Changed text-xl -> text-3xl (Big & Bold) */}
                <span className="font-black text-2xl md:text-3xl uppercase tracking-tight leading-none group-hover:text-gray-300 transition-colors">
@@ -48,7 +47,7 @@ export default function Navbar() {
               href="/sell" 
               className={`hover:text-white transition-colors ${isActive('/sell') ? 'text-white' : 'text-gray-300'}`}
             >
-              Sell Your Truck
+              Sell With Us
             </Link>
 
             <Link 
@@ -58,6 +57,7 @@ export default function Navbar() {
               About
             </Link>
 
+            {/* Cart is disabled during the consignment pivot. */}
             <button
               type="button"
               onClick={openSignup}

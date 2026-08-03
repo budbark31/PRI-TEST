@@ -8,6 +8,10 @@ export const dynamic = 'force-static'
 export const metadata: Metadata = {
   title: "PRI Manager",
   description: "Penn Rock Inventory Management System",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function StudioPage() {

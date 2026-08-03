@@ -1,5 +1,6 @@
 import type { LogoProps } from "sanity";
 import Image from "next/image";
+import type { LogoProps } from "sanity";
 
 export default function StudioLogo(props: LogoProps) {
   const { renderDefault } = props;

@@ -1,10 +1,28 @@
 import { Metadata } from "next";
 import PromoVideo from "@/app/components/PromoVideo";
 import TeamCard from "@/app/components/TeamCard";
+import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
 
 export const metadata: Metadata = {
   title: "About Us | Penn Rock Industries",
   description: "Meet the team behind Penn Rock Industries. Serving the Mid-Atlantic with honest deals on heavy equipment.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: "About Us | Penn Rock Industries",
+    description: "Meet the team behind Penn Rock Industries. Serving the Mid-Atlantic with honest deals on heavy equipment.",
+    url: buildAbsoluteUrl("/about"),
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Us | Penn Rock Industries",
+    description: "Meet the team behind Penn Rock Industries. Serving the Mid-Atlantic with honest deals on heavy equipment.",
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 // ===== TEAM DATA (Edit names, roles, and bios here) =====
@@ -55,23 +73,18 @@ export default function AboutPage() {
             {/* Text Content */}
             <div className="space-y-6">
               <p className="text-lg text-gray-700 leading-relaxed">
-                {/* PLACEHOLDER: Replace with your company history */}
-                Penn Rock Industries was founded with a simple mission: provide 
-                quality heavy equipment to hardworking contractors across the 
-                Mid-Atlantic region. What started as a small operation has grown 
-                into a trusted name in the industry.
+                Penn Rock Industries was built around a straightforward idea: make
+                it easier for contractors and operators to find dependable heavy
+                equipment without wasting time.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                {/* PLACEHOLDER: Replace with your values/approach */}
-                We believe in transparent pricing, honest assessments, and building 
-                long-term relationships with our customers. Every piece of equipment 
-                we sell is inspected and priced fairly. No games, no surprises.
+                We focus on transparent pricing, honest assessments, and
+                straightforward communication from first call to final handoff.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                {/* PLACEHOLDER: Replace with your commitment */}
-                Whether you&apos;re looking to buy your next dump truck or sell your 
-                existing fleet, Penn Rock is here to make the process simple and 
-                straightforward.
+                Whether you&apos;re looking for a truck, a piece of heavy equipment,
+                or help moving inventory quickly, Penn Rock is here to keep the
+                process simple and practical.
               </p>
             </div>
           </div>

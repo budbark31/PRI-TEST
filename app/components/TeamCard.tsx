@@ -15,7 +15,19 @@ export default function TeamCard({ member }: { member: Member }) {
   const preview = isLong ? `${member.bio.slice(0, previewLength).trim()}...` : member.bio;
 
   return (
-    <div className="bg-white border-2 border-slate-900 rounded-none p-8 text-center hover:shadow-[4px_4px_0_#0f172a] transition-shadow flex flex-col">
+    <div
+      role="button"
+      tabIndex={0}
+      aria-expanded={open}
+      onClick={() => setOpen((s) => !s)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          setOpen((s) => !s);
+        }
+      }}
+      className="bg-white border-2 border-slate-900 rounded-none p-8 text-center hover:shadow-[4px_4px_0_#0f172a] transition-shadow flex flex-col cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+    >
       <div className="w-32 h-32 mx-auto mb-6 rounded-none bg-gray-100 border-2 border-slate-900 flex items-center justify-center flex-shrink-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +55,10 @@ export default function TeamCard({ member }: { member: Member }) {
 
       {isLong && (
         <button
-          onClick={() => setOpen((s) => !s)}
+          onClick={(event) => {
+            event.stopPropagation();
+            setOpen((s) => !s);
+          }}
           className="mt-4 self-start text-slate-900 font-semibold text-sm"
         >
           {open ? "Show less" : "Read more"}

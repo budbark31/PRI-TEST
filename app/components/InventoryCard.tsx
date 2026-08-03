@@ -7,14 +7,24 @@ import { useState } from "react";
 interface TruckProps {
   title: string;
   slug: string;
-  images: string[];
-  price: number;
-  year: number;
-  make: string;
-  model: string;
-  hoursOrMileage: string;
-  status: string;
-  category: string;
+  images?: string[];
+  price?: number;
+  year?: number;
+  make?: string;
+  model?: string;
+  usage?: { value: number; unit: "miles" | "hours" } | null;
+  hoursOrMileage?: string;
+  status?: string;
+  category?: string;
+}
+
+function formatUsage(truck: TruckProps): string {
+  if (truck.usage && typeof truck.usage.value === "number") {
+    const unitLabel = truck.usage.unit === "hours" ? "hours" : "miles";
+    return `${truck.usage.value.toLocaleString()} ${unitLabel}`;
+  }
+
+  return truck.hoursOrMileage || "";
 }
 
 export default function InventoryCard({ truck }: { truck: TruckProps }) {
@@ -113,7 +123,7 @@ export default function InventoryCard({ truck }: { truck: TruckProps }) {
           </h3>
 
           <p className="text-gray-500 text-sm mb-4">
-            {truck.year} • {truck.make} • {truck.hoursOrMileage}
+            {truck.year} • {truck.make} • {formatUsage(truck)}
           </p>
 
           <div className="mt-auto flex items-center justify-between border-t pt-4">

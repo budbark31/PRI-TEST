@@ -1,7 +1,7 @@
 import { type SchemaTypeDefinition } from "sanity";
 import { inventoryType } from "./inventoryType";
-import { partType } from "./partType";
+import { orderType } from "./orderType";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [inventoryType, partType],
+  types: [inventoryType, orderType],
 };
