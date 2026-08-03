@@ -46,14 +46,11 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  const visibleParts = useMemo(() => parts.slice(0, visibleCount), [parts, visibleCount]);
+  const clampedVisibleCount = Math.min(visibleCount, parts.length);
+  const visibleParts = useMemo(() => parts.slice(0, clampedVisibleCount), [parts, clampedVisibleCount]);
 
   const loadMore = useCallback(() => {
     setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, parts.length));
-  }, [parts.length]);
-
-  useEffect(() => {
-    setVisibleCount(PAGE_SIZE);
   }, [parts.length]);
 
   useEffect(() => {
@@ -62,7 +59,7 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && visibleCount < parts.length) {
+        if (entries[0]?.isIntersecting && clampedVisibleCount < parts.length) {
           loadMore();
         }
       },
@@ -71,7 +68,7 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
 
     observer.observe(target);
     return () => observer.disconnect();
-  }, [loadMore, visibleCount, parts.length]);
+  }, [loadMore, clampedVisibleCount, parts.length]);
 
   if (parts.length === 0) {
     return (
@@ -180,7 +177,7 @@ export default function PartsInfiniteGrid({ parts }: { parts: Part[] }) {
         })}
       </div>
 
-      {visibleCount < parts.length && (
+      {clampedVisibleCount < parts.length && (
         <div className="flex justify-center py-8 text-gray-500">
           Loading more items...
         </div>

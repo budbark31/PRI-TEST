@@ -2,6 +2,7 @@ import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import Link from "next/link";
 import { PortableText } from "next-sanity"; 
+import type { PortableTextBlock } from "@portabletext/types";
 import ImageGallery from "@/app/components/ImageGallery"; 
 import ContactButtons from "@/app/components/ContactButtons";
 import InventoryCard from "@/app/components/InventoryCard"; // Reuse the card!
@@ -45,6 +46,34 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+type Truck = {
+  _id: string;
+  title: string;
+  images?: string[];
+  price?: number;
+  year?: number;
+  make?: string;
+  model?: string;
+  hoursOrMileage?: string;
+  status?: string;
+  description?: PortableTextBlock[];
+  category?: string;
+};
+
+type SimilarTruck = {
+  _id: string;
+  title: string;
+  slug: string;
+  images?: string[];
+  price?: number;
+  year?: number;
+  make?: string;
+  model?: string;
+  hoursOrMileage?: string;
+  status?: string;
+  category?: string;
+};
+
 // SEO Generator (Same as before)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -69,7 +98,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TruckPage({ params }: Props) {
   const { slug } = await params;
-  let data: { truck?: any; similar?: any[] } | null = null;
+  let data: { truck?: Truck; similar?: SimilarTruck[] } | null = null;
 
   try {
     data = await client.fetch(TRUCK_QUERY, { slug });
@@ -139,12 +168,13 @@ export default async function TruckPage({ params }: Props) {
         <div className="border-t border-gray-200 pt-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Similar Inventory</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {similar.map((simTruck: any) => (
+            {similar.map((simTruck) => (
               <InventoryCard key={simTruck._id} truck={simTruck} />
             ))}
           </div>
         </div>
       )}
+
     </main>
   );
 }

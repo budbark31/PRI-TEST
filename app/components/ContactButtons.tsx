@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import NutshellForm from "@/app/components/NutshellForm";
 
 interface ContactProps {
   truckTitle: string;
@@ -9,15 +10,13 @@ interface ContactProps {
 
 export default function ContactButtons({ truckTitle }: ContactProps) {
   const [showPhone, setShowPhone] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const formTargetId = useId();
 
   // --- REPLACE WITH YOUR ACTUAL DETAILS ---
   const PHONE_NUMBER = "610-507-4832"; // Put your real number here
   const PHONE_CLEAN = "6105074832";    // Numbers only for the link
-  const EMAIL_ADDRESS = "sales@pennrock.com";
   // ----------------------------------------
-
-  const emailSubject = encodeURIComponent(`Interested in: ${truckTitle}`);
-  const emailBody = encodeURIComponent(`Hi, I'm interested in the ${truckTitle}. Is it still available?`);
 
   return (
     <div className="flex flex-col gap-3">
@@ -26,12 +25,8 @@ export default function ContactButtons({ truckTitle }: ContactProps) {
         <a
           href={`tel:${PHONE_CLEAN}`}
           className="flex items-center justify-center w-full bg-orange-500 hover:bg-orange-600 text-white border-2 border-slate-900 font-bold uppercase tracking-widest text-sm py-4 rounded-none transition-all shadow-[4px_4px_0_#0f172a] active:scale-95"
-          onClick={(e) => {
-            // On desktop, we might want to just reveal the number instead of trying to open FaceTime
-            if (window.innerWidth > 768) {
-              e.preventDefault();
-              setShowPhone(!showPhone);
-            }
+          onClick={() => {
+            setShowPhone(!showPhone);
           }}
         >
           {showPhone ? PHONE_NUMBER : "📞 Call or Text for Price"}
@@ -46,12 +41,22 @@ export default function ContactButtons({ truckTitle }: ContactProps) {
       </div>
 
       {/* 2. Secondary Email Button */}
-      <a
-        href={`mailto:${EMAIL_ADDRESS}?subject=${emailSubject}&body=${emailBody}`}
+      <button
+        type="button"
+        onClick={() => setShowEmailForm((prev) => !prev)}
+        aria-expanded={showEmailForm}
+        aria-controls={`email-form-${formTargetId}`}
+        aria-label={`Email sales about ${truckTitle}`}
         className="flex items-center justify-center w-full bg-white hover:bg-slate-900 text-slate-900 border-2 border-slate-900 font-bold uppercase tracking-widest text-sm py-3 rounded-none transition-colors hover:text-white"
       >
         ✉️ Email Sales
-      </a>
+      </button>
+
+      {showEmailForm && (
+        <div id={`email-form-${formTargetId}`} className="border-2 border-slate-900 bg-white p-4">
+          <NutshellForm targetId={`nutshell-email-${formTargetId}`} />
+        </div>
+      )}
       
       <p className="text-center text-xs text-gray-400 mt-2">
         We respond to texts and emails 7 days a week.

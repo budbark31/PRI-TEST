@@ -122,6 +122,7 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
   });
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const resetVisibleCount = useCallback(() => setVisibleCount(PAGE_SIZE), []);
 
   // Quick Stats (count items not sold/out-of-stock - handles missing status field)
   const availableTrucks = trucks.filter((t) => t.status !== "sold").length;
@@ -155,21 +156,12 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
   }, [parts, partCategories, partConditions, searchQuery]);
 
   const displayedItems = activeTab === "trucks" ? filteredTrucks : filteredParts;
-  const visibleItems = useMemo(() => displayedItems.slice(0, visibleCount), [displayedItems, visibleCount]);
+  const clampedVisibleCount = Math.min(visibleCount, displayedItems.length);
+  const visibleItems = useMemo(() => displayedItems.slice(0, clampedVisibleCount), [displayedItems, clampedVisibleCount]);
 
   const loadMore = useCallback(() => {
     setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, displayedItems.length));
   }, [displayedItems.length]);
-
-  useEffect(() => {
-    setVisibleCount(PAGE_SIZE);
-  }, [activeTab, truckMakes, truckCategories, partCategories, partConditions, searchQuery]);
-
-  useEffect(() => {
-    if (visibleCount > displayedItems.length) {
-      setVisibleCount(displayedItems.length);
-    }
-  }, [displayedItems.length, visibleCount]);
 
   useEffect(() => {
     const target = loadMoreRef.current;
@@ -177,7 +169,7 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && visibleCount < displayedItems.length) {
+        if (entries[0]?.isIntersecting && clampedVisibleCount < displayedItems.length) {
           loadMore();
         }
       },
@@ -186,7 +178,7 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
 
     observer.observe(target);
     return () => observer.disconnect();
-  }, [loadMore, visibleCount, displayedItems.length]);
+  }, [loadMore, clampedVisibleCount, displayedItems.length]);
 
   const activeFilterCount =
     activeTab === "trucks"
@@ -199,6 +191,7 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
     setPartCategories([]);
     setPartConditions([]);
     setSearchQuery("");
+    resetVisibleCount();
   };
 
   const toggleSection = (sectionKey: string) => {
@@ -217,8 +210,12 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
             setTruckMakes((prev) =>
               prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
             );
+            resetVisibleCount();
           },
-          onClear: () => setTruckMakes([]),
+          onClear: () => {
+            setTruckMakes([]);
+            resetVisibleCount();
+          },
         },
         {
           key: "truck-category",
@@ -229,8 +226,12 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
             setTruckCategories((prev) =>
               prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
             );
+            resetVisibleCount();
           },
-          onClear: () => setTruckCategories([]),
+          onClear: () => {
+            setTruckCategories([]);
+            resetVisibleCount();
+          },
         },
       ];
     }
@@ -245,8 +246,12 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
           setPartCategories((prev) =>
             prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
           );
+          resetVisibleCount();
         },
-        onClear: () => setPartCategories([]),
+        onClear: () => {
+          setPartCategories([]);
+          resetVisibleCount();
+        },
       },
       {
         key: "part-condition",
@@ -257,11 +262,15 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
           setPartConditions((prev) =>
             prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
           );
+          resetVisibleCount();
         },
-        onClear: () => setPartConditions([]),
+        onClear: () => {
+          setPartConditions([]);
+          resetVisibleCount();
+        },
       },
     ];
-  }, [activeTab, truckMakes, truckCategories, partCategories, partConditions]);
+  }, [activeTab, truckMakes, truckCategories, partCategories, partConditions, resetVisibleCount]);
 
   return (
     <div>
@@ -284,7 +293,10 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
         <div className="flex justify-center mb-4">
           <div className="inline-flex bg-white rounded-none p-1.5 border-2 border-slate-900">
             <button
-              onClick={() => setActiveTab("trucks")}
+              onClick={() => {
+                setActiveTab("trucks");
+                resetVisibleCount();
+              }}
               className={`px-8 py-4 rounded-none font-bold uppercase tracking-widest text-xs transition-all border-2 border-transparent ${
                 activeTab === "trucks"
                   ? "bg-slate-900 text-white shadow-[4px_4px_0_#0f172a]"
@@ -294,7 +306,10 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
               Trucks & Heavy Equipment
             </button>
             <button
-              onClick={() => setActiveTab("parts")}
+              onClick={() => {
+                setActiveTab("parts");
+                resetVisibleCount();
+              }}
               className={`px-8 py-4 rounded-none font-bold uppercase tracking-widest text-xs transition-all border-2 border-transparent ${
                 activeTab === "parts"
                   ? "bg-slate-900 text-white shadow-[4px_4px_0_#0f172a]"
@@ -314,7 +329,10 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
                 type="text"
                 placeholder={activeTab === "trucks" ? "Search trucks..." : "Search parts..."}
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  resetVisibleCount();
+                }}
                 className="w-full px-4 py-3 pl-10 rounded-none border-2 border-slate-900 bg-white text-slate-900 font-medium focus:outline-none"
               />
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -451,7 +469,7 @@ export default function UnifiedInventoryGrid({ trucks, parts }: UnifiedGridProps
         )}
       </div>
 
-      {displayedItems.length > 0 && visibleCount < displayedItems.length && (
+      {displayedItems.length > 0 && clampedVisibleCount < displayedItems.length && (
         <div className="flex justify-center py-8 text-gray-500">
           Loading more items...
         </div>

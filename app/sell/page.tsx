@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export const metadata = {
   title: "Sell Your Truck | Penn Rock Industries",
   description: "We buy dump trucks, day cabs, and heavy equipment. Cash offers.",
@@ -80,7 +78,7 @@ export default function SellPage() {
               </li>
               <li className="flex items-center gap-4">
                 <span className="flex-shrink-0 text-slate-900 text-xl">🛡️</span>
-                <span className="text-lg text-gray-700 font-medium">No Hidden Fees or "Tire Kicking"</span>
+                <span className="text-lg text-gray-700 font-medium">No Hidden Fees or &ldquo;Tire Kicking&rdquo;</span>
               </li>
             </ul>
           </div>
@@ -97,7 +95,7 @@ export default function SellPage() {
           </h2>
           <p className="text-slate-400 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
             Send us the Year, Make, Model, and a few photos. <br className="hidden md:block"/>
-            We'll get back to you with a hard number, usually within 24 hours.
+            We&apos;ll get back to you with a hard number, usually within 24 hours.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

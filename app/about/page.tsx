@@ -1,17 +1,29 @@
 import { Metadata } from "next";
 import PromoVideo from "@/app/components/PromoVideo";
+import TeamCard from "@/app/components/TeamCard";
 
 export const metadata: Metadata = {
   title: "About Us | Penn Rock Industries",
   description: "Meet the team behind Penn Rock Industries. Serving the Mid-Atlantic with honest deals on heavy equipment.",
 };
 
-// ===== TEAM DATA (Edit names and roles here) =====
+// ===== TEAM DATA (Edit names, roles, and bios here) =====
 const teamMembers = [
-  { name: "Matt", role: "Sales / Acquisitions" },
-  { name: "Bryan", role: "Sales / Acquisitions" },
-  { name: "Bri", role: "Operations / Administration" },
-  { name: "Tiff", role: "Operations / Administration" },
+  {
+    name: "Austin",
+    role: "Sales / Acquisitions",
+    bio: `Austin Feather is an accomplished sales professional with a strong foundation in foreman leadership and precision mechanics. With a career built on hands-on expertise and operational insight, he brings a disciplined, results-driven approach to every endeavor. His ability to bridge technical knowledge with client-focused solutions allows him to consistently deliver high-quality outcomes and drive performance. Known for his professionalism, attention to detail, and commitment to excellence, Austin has earned a reputation for reliability and efficiency in fast-paced environments. His leadership background continues to influence his approach, emphasizing accountability, clear communication, and high standards.`,
+  },
+  {
+    name: "Briana",
+    role: "Operations / Administration",
+    bio: `Briana "Bri" Lambert is a driven and versatile professional with over 7 years of experience in billing and customer relations, now specializing in sales, marketing, and administrative support. She is known for her strong communication skills, reliability, and ability to build lasting relationships with clients. Bri brings a bold, solutions-focused approach to her work, with a passion for helping businesses stay organized, grow, and operate efficiently. Outside of her professional life, she is a dedicated fiancée and mother of two. She enjoys cooking, crafting, traveling, and embracing a hands-on homesteading lifestyle raising chickens and ducks and creating a life rooted in balance and purpose.`,
+  },
+  {
+    name: "Bryan",
+    role: "Sales / Acquisitions",
+    bio: `With over 35 years of hands-on experience in the truck and heavy equipment industry, Bryan Lambert has built a reputation for knowledge, integrity, and results. Specializing in all types of commercial trucks and construction equipment, Bryan has spent decades helping customers buy, sell, and source the equipment they need to keep their businesses moving forward. His experience spans dump trucks, sleepers, day cabs, vocational trucks, trailers, and a wide range of construction and heavy equipment. Known for his strong industry relationships and practical understanding of equipment values and market trends, Bryan takes pride in connecting buyers and sellers while creating smooth, honest transactions. Bryan’s passion for trucks and equipment started early and continues to drive his commitment to customer service today. Whether working with individual owner-operators, contractors, or large fleets, he brings professionalism, industry expertise, and a problem-solving mindset to every deal. Throughout his career, Bryan has earned the trust of customers by focusing on hard work, transparency, and long-term relationships principles that continue to define his approach today.`,
+  },
 ];
 
 export default function AboutPage() {
@@ -71,40 +83,9 @@ export default function AboutPage() {
             Meet the Team
           </h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {teamMembers.map((member, index) => (
-              <div 
-                key={index}
-                className="bg-white border-2 border-slate-900 rounded-none p-8 text-center hover:shadow-[4px_4px_0_#0f172a] transition-shadow"
-              >
-                {/* Headshot Placeholder */}
-                <div className="w-32 h-32 mx-auto mb-6 rounded-none bg-gray-100 border-2 border-slate-900 flex items-center justify-center">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    strokeWidth={1} 
-                    stroke="currentColor" 
-                    className="w-12 h-12 text-gray-300"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" 
-                    />
-                  </svg>
-                </div>
-                
-                {/* Name */}
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {member.name}
-                </h3>
-                
-                {/* Role - Easy to find and edit */}
-                <p className="text-slate-900 font-bold uppercase tracking-widest text-xs">
-                  {member.role}
-                </p>
-              </div>
+              <TeamCard key={index} member={member} />
             ))}
           </div>
         </section>

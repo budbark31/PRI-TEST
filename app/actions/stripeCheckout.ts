@@ -22,7 +22,7 @@ export async function createCheckoutSession(part: {
     return { url: null, error: "Price is required for checkout." };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pennrockequipment.com";
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -64,7 +64,7 @@ export async function createCartCheckoutSession(
     return { url: null, error: "All items must have a price to checkout." };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pennrockequipment.com";
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",

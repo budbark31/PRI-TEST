@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCart } from "@/app/components/CartProvider";
 import { useEmailSignup } from "@/app/components/EmailSignupProvider";
 
 export default function Navbar() {
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
-  const { totalItems } = useCart();
   const { openSignup } = useEmailSignup();
 
   return (
@@ -60,12 +58,6 @@ export default function Navbar() {
               About
             </Link>
 
-            <Link
-              href="/cart"
-              className={`hover:text-white transition-colors ${isActive('/cart') ? 'text-white' : 'text-gray-300'}`}
-            >
-              Cart{totalItems > 0 ? ` (${totalItems})` : ""}
-            </Link>
             <button
               type="button"
               onClick={openSignup}

@@ -25,18 +25,16 @@ const CartContext = createContext<CartContextValue | null>(null);
 const CART_STORAGE_KEY = "pri_cart";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
-
-  useEffect(() => {
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
     try {
       const stored = window.localStorage.getItem(CART_STORAGE_KEY);
-      if (stored) {
-        setItems(JSON.parse(stored));
-      }
+      return stored ? JSON.parse(stored) : [];
     } catch (error) {
       console.error("Failed to load cart:", error);
+      return [];
     }
-  }, []);
+  });
 
   useEffect(() => {
     try {

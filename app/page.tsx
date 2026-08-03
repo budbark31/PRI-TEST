@@ -4,7 +4,33 @@ import UnifiedInventoryGrid from "@/app/components/UnifiedInventoryGrid";
 
 export const revalidate = 60;
 
-type HomeData = { trucks: any[]; parts: any[] };
+type Truck = {
+  _id: string;
+  title: string;
+  slug: string;
+  images: string[];
+  price: number;
+  year: number;
+  make: string;
+  model: string;
+  hoursOrMileage: string;
+  status: string;
+  category: string;
+};
+
+type Part = {
+  _id: string;
+  title: string;
+  slug: string;
+  category: string;
+  condition: string;
+  status: string;
+  price: number;
+  inventoryCount: number;
+  imageUrl: string | null;
+};
+
+type HomeData = { trucks: Truck[]; parts: Part[] };
 
 export default async function Home() {
   let data: HomeData = { trucks: [], parts: [] };
