@@ -10,7 +10,7 @@ import { Metadata } from "next";
 
 // 1. UPDATED QUERY: Fetch the truck + 3 similar ones in the same category
 const TRUCK_QUERY = groq`{
-  "truck": *[_type == "inventory" && slug.current == $slug][0]{
+  "truck": *[_type == "inventory" && slug.current == $slug && !(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')][0]{
     _id,
     title,
     "images": images[].asset->url, 
@@ -25,7 +25,7 @@ const TRUCK_QUERY = groq`{
     stockDate,
     paperwork
   },
-  "similar": *[_type == "inventory" && slug.current != $slug && category == ^.category && status != "sold"][0..2]{
+  "similar": *[_type == "inventory" && slug.current != $slug && category == ^.category && status != "sold" && !(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')][0..2]{
     _id,
     title,
     "slug": slug.current,
@@ -80,7 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   let data: { title?: string; image?: string } | null = null;
 
   try {
-    data = await client.fetch(groq`*[_type == "inventory" && slug.current == $slug][0]{ title, "image": images[0].asset->url, year, make, model }`, { slug });
+    data = await client.fetch(groq`*[_type == "inventory" && slug.current == $slug && !(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')][0]{ title, "image": images[0].asset->url, year, make, model }`, { slug });
   } catch (error) {
     console.error("Sanity fetch failed for /inventory/[slug] metadata:", error);
   }
