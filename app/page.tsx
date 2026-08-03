@@ -6,6 +6,7 @@ export const revalidate = 60;
 
 type Truck = {
   _id: string;
+  _type: "inventory";
   title: string;
   slug: string;
   images: string[];
@@ -20,6 +21,7 @@ type Truck = {
 
 type Part = {
   _id: string;
+  _type: "part";
   title: string;
   slug: string;
   category: string;
