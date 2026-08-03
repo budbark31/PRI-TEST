@@ -171,7 +171,17 @@ export default async function TruckPage({ params }: Props) {
             {similar.map((simTruck) => (
               <InventoryCard
                 key={simTruck._id}
-                truck={{ ...simTruck, images: simTruck.images ?? [] }}
+                truck={{
+                  ...simTruck,
+                  images: simTruck.images ?? [],
+                  price: simTruck.price ?? 0,
+                  year: simTruck.year ?? 0,
+                  make: simTruck.make ?? "Unknown",
+                  model: simTruck.model ?? "Unknown",
+                  hoursOrMileage: simTruck.hoursOrMileage ?? "N/A",
+                  status: simTruck.status ?? "available",
+                  category: simTruck.category ?? "other",
+                }}
               />
             ))}
           </div>
