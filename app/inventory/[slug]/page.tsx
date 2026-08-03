@@ -169,7 +169,10 @@ export default async function TruckPage({ params }: Props) {
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Similar Inventory</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {similar.map((simTruck) => (
-              <InventoryCard key={simTruck._id} truck={simTruck} />
+              <InventoryCard
+                key={simTruck._id}
+                truck={{ ...simTruck, images: simTruck.images ?? [] }}
+              />
             ))}
           </div>
         </div>
