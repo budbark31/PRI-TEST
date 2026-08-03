@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   },
 };
 
-// ===== TEAM DATA (Edit names, roles, and bios here) =====
 const teamMembers = [
   {
     name: "Austin",
@@ -47,8 +46,6 @@ const teamMembers = [
 export default function AboutPage() {
   return (
     <main className="bg-white min-h-screen">
-      
-      {/* 1. HERO SECTION */}
       <div className="bg-slate-900 text-white py-20 px-4 text-center border-b border-slate-800">
         <h1 className="text-4xl md:text-5xl font-extrabold uppercase tracking-wide mb-4">
           About Penn Rock Industries
@@ -59,18 +56,14 @@ export default function AboutPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-16">
-        
-        {/* 2. OUR STORY / MISSION SECTION */}
         <section className="mb-20">
           <h2 className="text-3xl font-bold text-gray-900 uppercase tracking-wide mb-10 text-center">
             Our Story
           </h2>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Promo Video */}
             <PromoVideo />
-            
-            {/* Text Content */}
+
             <div className="space-y-6">
               <p className="text-lg text-gray-700 leading-relaxed">
                 Penn Rock Industries was built around a straightforward idea: make
@@ -90,19 +83,17 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 3. MEET THE TEAM SECTION */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 uppercase tracking-wide mb-10 text-center">
             Meet the Team
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {teamMembers.map((member, index) => (
               <TeamCard key={index} member={member} />
             ))}
           </div>
         </section>
-
       </div>
     </main>
   );

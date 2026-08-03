@@ -1,7 +1,10 @@
 import { groq } from "next-sanity";
 
+const EXCLUDE_DEMO_INVENTORY =
+  "!(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')";
+
 export const ALL_INVENTORY_QUERY = groq`{
-  "trucks": *[_type == "inventory" && defined(slug.current)] | order(_updatedAt desc) {
+  "trucks": *[_type == "inventory" && defined(slug.current) && ${EXCLUDE_DEMO_INVENTORY}] | order(_updatedAt desc) {
     _id,
     _type,
     title,
