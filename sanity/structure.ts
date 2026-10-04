@@ -5,7 +5,6 @@ export const structure: StructureResolver = (S) =>
     .title("Content")
     .items([
       S.documentTypeListItem("inventory").title("Inventory"),
-      S.documentTypeListItem("order").title("Orders"),
       S.divider(),
       ...S.documentTypeListItems().filter(
         (item) => !["inventory", "order"].includes(item.getId() || "")
