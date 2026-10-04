@@ -8,7 +8,7 @@ import { useEmailSignup } from "@/app/components/EmailSignupProvider";
 export default function Navbar() {
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
-  const { openSignup } = useEmailSignup();
+  const { openSignup, isSignupEnabled } = useEmailSignup();
 
   return (
     // Increased height from h-20 to h-24 to fit the bigger logo
@@ -58,13 +58,15 @@ export default function Navbar() {
             </Link>
 
             {/* Cart is disabled during the consignment pivot. */}
-            <button
-              type="button"
-              onClick={openSignup}
-              className="rounded-none border-2 border-slate-900 bg-orange-500 px-3 py-1 text-white font-bold uppercase tracking-widest text-xs transition-colors hover:bg-orange-600"
-            >
-              Join List
-            </button>
+            {isSignupEnabled && (
+              <button
+                type="button"
+                onClick={openSignup}
+                className="rounded-none border-2 border-slate-900 bg-orange-500 px-3 py-1 text-white font-bold uppercase tracking-widest text-xs transition-colors hover:bg-orange-600"
+              >
+                Join List
+              </button>
+            )}
           </div>
 
         </div>

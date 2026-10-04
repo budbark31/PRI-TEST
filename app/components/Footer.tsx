@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEmailSignup } from "@/app/components/EmailSignupProvider";
 
 export default function Footer() {
-  const { openSignup } = useEmailSignup();
+  const { openSignup, isSignupEnabled } = useEmailSignup();
 
   return (
     <footer className="bg-slate-900 text-white border-t border-slate-800">
@@ -27,7 +27,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <span className="mt-0.5">📍</span>
                 <a 
-                  href="https://maps.google.com/?q=Glenville+PA" 
+                  href="https://maps.google.com/?q=Reading+PA" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
@@ -44,8 +44,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <span>✉️</span>
-                <a href="mailto:sales@pennrock.com" className="hover:text-white transition-colors">
-                  sales@pennrock.com
+                <a href="mailto:bri.lambert@pennrockequipment.com" className="hover:text-white transition-colors">
+                  bri.lambert@pennrockequipment.com
                 </a>
               </li>
             </ul>
@@ -80,15 +80,17 @@ export default function Footer() {
                   About Us
                 </Link>
               </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={openSignup}
-                  className="border-2 border-slate-900 bg-orange-500 px-3 py-1 text-white font-bold uppercase tracking-widest text-xs hover:bg-orange-600 transition-colors"
-                >
-                  Join Email List
-                </button>
-              </li>
+              {isSignupEnabled && (
+                <li>
+                  <button
+                    type="button"
+                    onClick={openSignup}
+                    className="border-2 border-slate-900 bg-orange-500 px-3 py-1 text-white font-bold uppercase tracking-widest text-xs hover:bg-orange-600 transition-colors"
+                  >
+                    Join Email List
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 

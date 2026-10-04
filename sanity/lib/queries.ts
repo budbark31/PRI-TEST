@@ -1,6 +1,6 @@
 import { groq } from "next-sanity";
 
-const EXCLUDE_DEMO_INVENTORY =
+export const EXCLUDE_DEMO_INVENTORY =
   "!(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')";
 
 export const ALL_INVENTORY_QUERY = groq`{

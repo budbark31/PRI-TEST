@@ -8,8 +8,13 @@ const SHOW_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000;
 const MAILING_LIST_FORM_ID = process.env.NEXT_PUBLIC_NUTSHELL_MAILING_FORM_ID;
 const MAILING_LIST_INSTANCE_ID = process.env.NEXT_PUBLIC_NUTSHELL_MAILING_INSTANCE_ID;
 
+// The signup button only renders once a Nutshell mailing form is configured,
+// so visitors never open an empty popup.
+const SIGNUP_ENABLED = Boolean(MAILING_LIST_FORM_ID && MAILING_LIST_INSTANCE_ID);
+
 type EmailSignupContextValue = {
   openSignup: () => void;
+  isSignupEnabled: boolean;
 };
 
 const EmailSignupContext = createContext<EmailSignupContextValue | null>(null);
@@ -37,7 +42,7 @@ export function EmailSignupProvider({ children }: { children: React.ReactNode })
     setIsOpen(false);
   };
 
-  const value = useMemo(() => ({ openSignup }), []);
+  const value = useMemo(() => ({ openSignup, isSignupEnabled: SIGNUP_ENABLED }), []);
   const popoverClasses = `fixed bottom-4 left-4 right-4 z-50 w-auto max-w-none transition-all duration-200 ease-out sm:left-auto sm:right-4 sm:w-full sm:max-w-md ${
     isOpen ? "pointer-events-auto opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-2"
   }`;
