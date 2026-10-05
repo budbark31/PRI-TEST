@@ -1,5 +1,5 @@
 import type { StructureResolver } from "sanity/structure";
-import { CheckmarkCircleIcon, CloseCircleIcon, DocumentsIcon, TagIcon } from "@sanity/icons";
+import { CheckmarkCircleIcon, CloseCircleIcon, TagIcon } from "@sanity/icons";
 
 const MAKES = ["Kenworth", "Peterbilt", "Mack", "Ford", "Freightliner", "International"];
 
@@ -24,29 +24,27 @@ export const structure: StructureResolver = (S) => {
         .icon(CloseCircleIcon)
         .child(truckList("Sold Trucks", 'status == "sold"')),
       S.listItem()
-        .title("By Make")
+        .title("Active by Make")
         .icon(TagIcon)
         .child(
           S.list()
-            .title("By Make")
+            .title("Active by Make")
             .items([
               ...MAKES.map((make) =>
                 S.listItem()
                   .id(make.toLowerCase())
                   .title(make)
-                  .child(truckList(make, "lower(make) == $make", { make: make.toLowerCase() }))
+                  .child(truckList(make, 'status != "sold" && lower(make) == $make', { make: make.toLowerCase() }))
               ),
               S.listItem()
                 .id("other")
                 .title("Other")
                 .child(
-                  truckList("Other", "!(lower(coalesce(make, \"\")) in $makes)", {
+                  truckList("Other", 'status != "sold" && !(lower(coalesce(make, "")) in $makes)', {
                     makes: MAKES.map((make) => make.toLowerCase()),
                   })
                 ),
             ])
         ),
-      S.divider(),
-      S.documentTypeListItem("inventory").title("All Trucks").icon(DocumentsIcon),
     ]);
 };
