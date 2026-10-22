@@ -9,6 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Public Sanity identifiers (already shipped in the browser bundle), needed at build time.
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 72zzspuo
+      NEXT_PUBLIC_SANITY_DATASET: production
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js
