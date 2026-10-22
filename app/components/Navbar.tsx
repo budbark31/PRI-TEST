@@ -12,7 +12,7 @@ export default function Navbar() {
 
   return (
     // Increased height from h-20 to h-24 to fit the bigger logo
-    <nav className="bg-slate-900 text-white shadow-[6px_6px_0_#0f172a] sticky top-0 z-50 h-24 flex items-center">
+    <nav className="bg-slate-900 text-white shadow-[0_6px_0_#0f172a] sticky top-0 z-50 h-24 flex items-center">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="flex justify-between items-center">
           
@@ -24,18 +24,18 @@ export default function Navbar() {
 
              <div className="flex flex-col">
                {/* Changed text-xl -> text-3xl (Big & Bold) */}
-               <span className="font-black text-2xl md:text-3xl uppercase tracking-tight leading-none group-hover:text-gray-300 transition-colors">
+               <span className="font-black text-xl sm:text-2xl md:text-3xl uppercase tracking-tight leading-none whitespace-nowrap group-hover:text-gray-300 transition-colors">
                  Penn Rock
                </span>
                {/* Changed text-[10px] -> text-xs/sm (Readable) */}
-               <span className="text-xs md:text-sm text-gray-400 uppercase tracking-[0.3em] font-medium mt-1">
+               <span className="text-[10px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-[0.3em] font-medium mt-1">
                  Industries
                </span>
              </div>
           </Link>
 
           {/* 2. NAVIGATION LINKS */}
-          <div className="flex gap-6 md:gap-10 text-sm md:text-base font-bold uppercase tracking-wide">
+          <div className="flex items-center gap-3 sm:gap-6 md:gap-10 text-[11px] sm:text-sm md:text-base font-bold uppercase tracking-normal sm:tracking-wide whitespace-nowrap">
             <Link 
               href="/" 
               className={`hover:text-white transition-colors ${isActive('/') ? 'text-white' : 'text-gray-300'}`}

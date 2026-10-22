@@ -6,7 +6,6 @@ import type { PortableTextBlock } from "@portabletext/types";
 import ImageGallery from "@/app/components/ImageGallery"; 
 import ContactButtons from "@/app/components/ContactButtons";
 import InventoryCard from "@/app/components/InventoryCard"; // Reuse the card!
-import LoadableNutshellForm from "@/app/components/LoadableNutshellForm";
 import { Metadata } from "next";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
 
@@ -45,9 +44,6 @@ const TRUCK_QUERY = groq`{
 }`;
 
 export const revalidate = 90;
-
-const SALES_FORM_ID = process.env.NEXT_PUBLIC_NUTSHELL_SALES_FORM_ID;
-const SALES_INSTANCE_ID = process.env.NEXT_PUBLIC_NUTSHELL_SALES_INSTANCE_ID;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -219,17 +215,6 @@ export default async function TruckPage({ params }: Props) {
           </div>
         </div>
       )}
-
-      <section className="mt-16 border-t border-gray-200 pt-12">
-        <LoadableNutshellForm
-          title="Talk to Sales About This Truck"
-          description="Send a quick note and our sales team will follow up with availability, pricing, and shipping details."
-          buttonLabel="Load Sales Form"
-          formId={SALES_FORM_ID}
-          instanceId={SALES_INSTANCE_ID}
-          targetId={`nutshell-sales-${truck._id}`}
-        />
-      </section>
 
     </main>
   );
