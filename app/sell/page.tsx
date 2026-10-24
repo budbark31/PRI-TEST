@@ -3,7 +3,7 @@ import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
 import { WHY_CHOOSE_US } from "@/app/lib/consignment";
 
 export const metadata: Metadata = {
-  title: "Sell Equipment | Penn Rock Industries",
+  title: "Sell Equipment",
   description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We represent and sell it for you.",
   alternates: {
     canonical: "/sell",
@@ -43,7 +43,7 @@ export default function SellPage() {
         {/* 2. WHAT WE BUY */}
         <div className="max-w-3xl mx-auto mb-16">
           
-          {/* LEFT CARD: What We Buy */}
+          {/* LEFT CARD: What We Consign */}
           <div className="bg-white border-2 border-slate-900 rounded-none p-8 md:p-12 hover:shadow-[4px_4px_0_#0f172a] transition-shadow flex flex-col h-full">
             <div className="flex items-center gap-4 mb-8 border-b border-gray-100 pb-6">
               <div className="bg-gray-100 text-slate-900 p-4 rounded-none border-2 border-slate-900">
@@ -52,7 +52,7 @@ export default function SellPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-3.375h-5.845a2.018 2.018 0 0 1-1.94-1.125l-2.738-4.509" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">What We Buy</h3>
+              <h3 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">What We Consign</h3>
             </div>
             
             <ul className="space-y-5 flex-grow">

@@ -101,7 +101,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
   if (!data) {
     return {
-      title: "Truck Not Found | Penn Rock Industries",
+      title: "Truck Not Found",
       robots: {
         index: false,
         follow: false,
@@ -115,7 +115,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : "Heavy truck and equipment inventory at Penn Rock Industries.";
 
   return {
-    title: `${data.title} | Penn Rock Industries`,
+    title: data.title,
     description,
     alternates: {
       canonical: `/inventory/${slug}`,
@@ -149,7 +149,15 @@ export default async function TruckPage({ params }: Props) {
   const { truck, similar } = data || {};
 
   if (!truck) {
-    return <div className="text-center py-20">Truck Not Found</div>;
+    return (
+      <main className="max-w-3xl mx-auto px-4 py-24 text-center bg-white min-h-screen">
+        <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight">Truck Not Found</h1>
+        <p className="mt-4 text-lg text-gray-700">This listing may have sold or been removed.</p>
+        <Link href="/" className="mt-8 inline-block bg-slate-900 hover:bg-slate-800 text-white font-bold uppercase tracking-widest text-sm py-4 px-8 rounded-none">
+          Back to Inventory
+        </Link>
+      </main>
+    );
   }
 
   return (

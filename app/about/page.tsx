@@ -4,7 +4,7 @@ import TeamCard from "@/app/components/TeamCard";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
 
 export const metadata: Metadata = {
-  title: "About Us | Penn Rock Industries",
+  title: "About Us",
   description: "Meet the team behind Penn Rock Industries. Serving the Mid-Atlantic with honest deals on heavy equipment.",
   alternates: {
     canonical: "/about",
