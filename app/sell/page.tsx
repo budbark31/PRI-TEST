@@ -4,7 +4,7 @@ import { WHY_CHOOSE_US } from "@/app/lib/consignment";
 
 export const metadata: Metadata = {
   title: "Sell Equipment | Penn Rock Industries",
-  description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We market, represent, and sell it for you.",
+  description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We represent and sell it for you.",
   alternates: {
     canonical: "/sell",
   },
@@ -12,14 +12,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE_NAME,
     title: "Sell Equipment | Penn Rock Industries",
-    description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We market, represent, and sell it for you.",
+    description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We represent and sell it for you.",
     url: buildAbsoluteUrl("/sell"),
     images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "Sell Equipment | Penn Rock Industries",
-    description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We market, represent, and sell it for you.",
+    description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We represent and sell it for you.",
     images: [DEFAULT_OG_IMAGE],
   },
 };
@@ -75,13 +75,10 @@ export default function SellPage() {
 
         {/* WHY CHOOSE US */}
         <section className="mb-16">
-          <p className="text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto text-center mb-12">
-            We invest heavily in marketing to ensure your equipment receives maximum exposure across multiple platforms, reaching qualified buyers throughout the United States and beyond. Our goal is simple: present your equipment professionally, attract serious buyers, and help you achieve the strongest possible market value.
-          </p>
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight text-center">
             More Than a Listing — A Complete Sales Strategy
           </h2>
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
             {WHY_CHOOSE_US.map((item) => (
               <div
                 key={item.title}

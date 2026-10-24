@@ -3,7 +3,6 @@ import { ALL_INVENTORY_QUERY } from "@/sanity/lib/queries";
 import UnifiedInventoryGrid from "@/app/components/UnifiedInventoryGrid";
 import type { Metadata } from "next";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
-import { WHY_CHOOSE_US } from "@/app/lib/consignment";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -96,20 +95,9 @@ export default async function Home() {
         <UnifiedInventoryGrid trucks={data.trucks} />
       </div>
 
-      {/* Why Choose Us badges (full copy lives on the Sell page) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {WHY_CHOOSE_US.filter((item) => item.badge).map((item) => (
-            <Link
-              key={item.title}
-              href="/sell"
-              className="bg-white border-2 border-slate-900 rounded-none p-4 text-center font-bold uppercase tracking-wide text-sm sm:text-base text-slate-900 hover:shadow-[4px_4px_0_#0f172a] transition-shadow"
-            >
-              {item.title}
-            </Link>
-          ))}
-        </div>
-        <p className="mt-4 text-center">
+      {/* Link to the full consignment pitch on the Sell page */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+        <p className="text-center">
           <Link href="/sell" className="font-bold text-orange-600 hover:text-orange-700 underline underline-offset-4">
             See how consignment works
           </Link>
