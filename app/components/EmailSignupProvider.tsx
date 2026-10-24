@@ -70,7 +70,7 @@ export function EmailSignupProvider({ children }: { children: React.ReactNode })
           </div>
 
           <p className="mt-3 text-sm text-gray-600">
-            Weekly drops of heavy trucks, equipment, and parts. No spam.
+            New heavy trucks and equipment as they come in. No spam.
           </p>
 
           <div className="mt-5">

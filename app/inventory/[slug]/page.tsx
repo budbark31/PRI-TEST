@@ -9,6 +9,13 @@ import InventoryCard from "@/app/components/InventoryCard"; // Reuse the card!
 import { Metadata } from "next";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
 
+const CATEGORY_LABELS: Record<string, string> = {
+  "dump-trucks": "Dump Trucks",
+  "day-cabs": "Day Cabs",
+  "heavy-equipment": "Heavy Equipment",
+  trailers: "Trailers",
+};
+
 // 1. UPDATED QUERY: Fetch the truck + 3 similar ones in the same category
 const TRUCK_QUERY = groq`{
   "truck": *[_type == "inventory" && slug.current == $slug][0]{
@@ -183,7 +190,7 @@ export default async function TruckPage({ params }: Props) {
         <div className="flex flex-col h-full">
           {truck.category && (
             <span className="inline-block bg-gray-100 border-2 border-slate-900 text-xs px-2 py-1 rounded-none font-bold uppercase tracking-widest text-slate-900 mb-4 w-fit">
-              {truck.category}
+              {CATEGORY_LABELS[truck.category] ?? truck.category}
             </span>
           )}
 
