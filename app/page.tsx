@@ -3,6 +3,8 @@ import { ALL_INVENTORY_QUERY } from "@/sanity/lib/queries";
 import UnifiedInventoryGrid from "@/app/components/UnifiedInventoryGrid";
 import type { Metadata } from "next";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
+import { WHY_CHOOSE_US } from "@/app/lib/consignment";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Heavy Trucks & Equipment Inventory",
@@ -45,36 +47,6 @@ type Truck = {
 
 type HomeData = { trucks: Truck[] };
 
-const WHY_CHOOSE_US = [
-  {
-    title: "Maximum Exposure",
-    body: "We actively market your equipment across industry-leading platforms, social media channels, search engines, email campaigns, and our extensive buyer network.",
-  },
-  {
-    title: "Qualified Buyer Reach",
-    body: "Our marketing targets serious buyers who are actively searching for trucks and equipment, helping reduce wasted time and unproductive inquiries.",
-  },
-  {
-    title: "Industry Experience",
-    body: "We understand the heavy truck and equipment market, allowing us to position your assets effectively and attract the right audience.",
-  },
-  {
-    title: "Professional Representation",
-    body: "Your equipment is presented with detailed descriptions, quality photography, and knowledgeable support for prospective buyers.",
-  },
-  {
-    title: "Time Savings",
-    body: "We handle inquiries, schedule showings, answer questions, and manage negotiations so you can stay focused on running your business.",
-  },
-  {
-    title: "Transaction Support",
-    body: "From initial inquiry through final payment and delivery coordination, we help guide the transaction to a successful close.",
-  },
-  {
-    title: "Performance-Based Success",
-    body: "Our success depends on yours. We are motivated to generate interest, create competition, and achieve the best possible outcome for every consignment.",
-  },
-];
 
 export default async function Home() {
   let data: HomeData = { trucks: [] };
@@ -95,6 +67,9 @@ export default async function Home() {
           </h1>
           <p className="mt-4 text-lg text-gray-300 max-w-3xl mx-auto">
             Our team specializes in the consignment and marketing of heavy trucks, trailers, and equipment. We handle the advertising, buyer inquiries, showings, negotiations, and transaction management so you can focus on your business while we focus on getting your equipment sold.
+          </p>
+          <p className="mt-4 text-lg font-bold text-white max-w-3xl mx-auto">
+            We don&apos;t simply list equipment—we actively market, represent, and sell it.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <a
@@ -121,62 +96,32 @@ export default async function Home() {
         <UnifiedInventoryGrid trucks={data.trucks} />
       </div>
 
-      {/* What We Do */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-        <p className="text-sm font-bold uppercase tracking-widest text-orange-600 text-center">What We Do</p>
-        <h2 className="mt-2 text-3xl md:text-4xl font-black text-slate-900 tracking-tight text-center">
-          Heavy Truck &amp; Equipment Consignment Specialists
-        </h2>
-        <div className="mt-8 space-y-5 text-lg text-gray-700 leading-relaxed">
-          <p>
-            We help owners maximize the value of their trucks, trailers, and equipment through professional consignment and targeted marketing solutions.
-          </p>
-          <p>
-            Selling heavy equipment on your own can be time-consuming, frustrating, and costly. Our team handles the entire process—from professional listings and strategic advertising to buyer communication, equipment showings, negotiations, and transaction management.
-          </p>
-          <p>
-            We invest heavily in marketing to ensure your equipment receives maximum exposure across multiple platforms, reaching qualified buyers throughout the United States and beyond. Our goal is simple: present your equipment professionally, attract serious buyers, and help you achieve the strongest possible market value.
-          </p>
-          <p>
-            Whether you&apos;re selling a single truck or liquidating an entire fleet, we provide the experience, resources, and industry knowledge needed to make the process efficient and successful.
-          </p>
-          <p className="font-bold text-slate-900">
-            We don&apos;t simply list equipment—we actively market, represent, and sell it.
-          </p>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-        <p className="text-sm font-bold uppercase tracking-widest text-orange-600 text-center">Why Choose Us</p>
-        <h2 className="mt-2 text-3xl md:text-4xl font-black text-slate-900 tracking-tight text-center">
-          More Than a Listing — A Complete Sales Strategy
-        </h2>
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {WHY_CHOOSE_US.map((item) => (
-            <div
+      {/* Why Choose Us badges (full copy lives on the Sell page) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {WHY_CHOOSE_US.filter((item) => item.badge).map((item) => (
+            <Link
               key={item.title}
-              className="bg-white border-2 border-slate-900 rounded-none p-6 hover:shadow-[4px_4px_0_#0f172a] transition-shadow"
+              href="/sell"
+              className="bg-white border-2 border-slate-900 rounded-none p-4 text-center font-bold uppercase tracking-wide text-sm sm:text-base text-slate-900 hover:shadow-[4px_4px_0_#0f172a] transition-shadow"
             >
-              <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wide">{item.title}</h3>
-              <p className="mt-3 text-gray-700 leading-relaxed">{item.body}</p>
-            </div>
+              {item.title}
+            </Link>
           ))}
         </div>
-        <p className="mt-10 text-xl md:text-2xl font-bold text-slate-900 text-center max-w-4xl mx-auto">
-          When You Consign With Us, You&apos;re Not Just Listing Equipment—You&apos;re Gaining a Dedicated Sales and Marketing Team Working to Get It Sold.
+        <p className="mt-4 text-center">
+          <Link href="/sell" className="font-bold text-orange-600 hover:text-orange-700 underline underline-offset-4">
+            See how consignment works
+          </Link>
         </p>
       </section>
 
       {/* Ready To Sell CTA */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-        <div className="bg-slate-900 rounded-none p-8 md:p-16 text-center border-2 border-slate-900 shadow-[6px_6px_0_#0f172a] overflow-hidden relative">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="bg-slate-900 rounded-none p-8 md:p-12 text-center border-2 border-slate-900 shadow-[6px_6px_0_#0f172a] overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-orange-500"></div>
           <h2 className="text-3xl font-bold text-white mb-4">Ready To Sell?</h2>
-          <p className="text-slate-300 max-w-2xl mx-auto text-lg leading-relaxed">
-            Whether you have one truck or an entire fleet, our experienced sales and marketing team is ready to help maximize your equipment&apos;s exposure and market value.
-          </p>
-          <p className="mt-4 mb-8 text-white font-bold max-w-2xl mx-auto text-lg leading-relaxed">
+          <p className="mb-8 text-white font-bold max-w-2xl mx-auto text-lg leading-relaxed">
             Contact us today to discuss your equipment and learn how our consignment program can work for you.
           </p>
           <a

@@ -79,6 +79,10 @@ export default function AboutPage() {
                 or help moving inventory quickly, Penn Rock is here to keep the
                 process simple and practical.
               </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                We understand the heavy truck and equipment market, allowing us to
+                position your assets effectively and attract the right audience.
+              </p>
             </div>
           </div>
         </section>

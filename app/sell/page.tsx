@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
+import { WHY_CHOOSE_US } from "@/app/lib/consignment";
 
 export const metadata: Metadata = {
   title: "Sell Equipment | Penn Rock Industries",
-  description: "Reach out to sell trucks or heavy equipment directly to Penn Rock Industries.",
+  description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We market, represent, and sell it for you.",
   alternates: {
     canonical: "/sell",
   },
@@ -11,14 +12,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE_NAME,
     title: "Sell Equipment | Penn Rock Industries",
-    description: "Reach out to sell trucks or heavy equipment directly to Penn Rock Industries.",
+    description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We market, represent, and sell it for you.",
     url: buildAbsoluteUrl("/sell"),
     images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "Sell Equipment | Penn Rock Industries",
-    description: "Reach out to sell trucks or heavy equipment directly to Penn Rock Industries.",
+    description: "Consign your heavy trucks, trailers, and equipment with Penn Rock Industries. We market, represent, and sell it for you.",
     images: [DEFAULT_OG_IMAGE],
   },
 };
@@ -29,19 +30,18 @@ export default function SellPage() {
       
       {/* 1. HERO SECTION */}
       <div className="bg-slate-900 text-white py-20 px-4 text-center border-b border-slate-800">
-        <h1 className="text-4xl md:text-5xl font-extrabold uppercase tracking-wide mb-4">
-          Sell Trucks or Heavy Equipment
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-wide mb-4">
+          Heavy Truck &amp; Equipment Consignment Specialists
         </h1>
         <p className="text-xl text-slate-300 max-w-2xl mx-auto font-medium">
-          If you have trucks or heavy equipment to move, call or text and we&apos;ll
-          talk through the quickest way to handle it.
+          We help owners maximize the value of their trucks, trailers, and equipment through professional consignment and targeted marketing solutions.
         </p>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-16">
         
-        {/* 2. INFO GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        {/* 2. WHAT WE BUY */}
+        <div className="max-w-3xl mx-auto mb-16">
           
           {/* LEFT CARD: What We Buy */}
           <div className="bg-white border-2 border-slate-900 rounded-none p-8 md:p-12 hover:shadow-[4px_4px_0_#0f172a] transition-shadow flex flex-col h-full">
@@ -71,43 +71,31 @@ export default function SellPage() {
             </ul>
           </div>
 
-          {/* RIGHT CARD: Why Sell With Us */}
-            <div className="bg-white border-2 border-slate-900 rounded-none p-8 md:p-12 hover:shadow-[4px_4px_0_#0f172a] transition-shadow flex flex-col h-full">
-             <div className="flex items-center gap-4 mb-8 border-b border-gray-100 pb-6">
-              <div className="bg-gray-100 text-slate-900 p-4 rounded-none border-2 border-slate-900">
-                {/* Star Icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 uppercase tracking-wide">Why Sell With Us?</h3>
-            </div>
-
-            <ul className="space-y-5 flex-grow">
-              <li className="flex items-center gap-4">
-                <span className="flex-shrink-0 text-slate-900 text-xl">⚡</span>
-                <span className="text-lg text-gray-700 font-medium">We give you a direct contact point without a long intake process.</span>
-              </li>
-              <li className="flex items-center gap-4">
-                <span className="flex-shrink-0 text-slate-900 text-xl">🤝</span>
-                <span className="text-lg text-gray-700 font-medium">We focus on a simple conversation and a fast response.</span>
-              </li>
-              <li className="flex items-center gap-4">
-                <span className="flex-shrink-0 text-slate-900 text-xl">🧭</span>
-                <span className="text-lg text-gray-700 font-medium">We keep the process focused on condition, location, and next steps.</span>
-              </li>
-              <li className="flex items-center gap-4">
-                <span className="flex-shrink-0 text-slate-900 text-xl">📸</span>
-                <span className="text-lg text-gray-700 font-medium">Photos and details help move things faster, so send both if you have them.</span>
-              </li>
-              <li className="flex items-center gap-4">
-                <span className="flex-shrink-0 text-slate-900 text-xl">🏁</span>
-                <span className="text-lg text-gray-700 font-medium">We&apos;ll tell you honestly whether it is a fit.</span>
-              </li>
-            </ul>
-          </div>
-        
         </div>
+
+        {/* WHY CHOOSE US */}
+        <section className="mb-16">
+          <p className="text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto text-center mb-12">
+            We invest heavily in marketing to ensure your equipment receives maximum exposure across multiple platforms, reaching qualified buyers throughout the United States and beyond. Our goal is simple: present your equipment professionally, attract serious buyers, and help you achieve the strongest possible market value.
+          </p>
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight text-center">
+            More Than a Listing — A Complete Sales Strategy
+          </h2>
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {WHY_CHOOSE_US.map((item) => (
+              <div
+                key={item.title}
+                className="bg-white border-2 border-slate-900 rounded-none p-6 hover:shadow-[4px_4px_0_#0f172a] transition-shadow"
+              >
+                <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wide">{item.title}</h3>
+                <p className="mt-3 text-gray-700 leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-10 text-xl md:text-2xl font-bold text-slate-900 text-center max-w-4xl mx-auto">
+            When You Consign With Us, You&apos;re Not Just Listing Equipment—You&apos;re Gaining a Dedicated Sales and Marketing Team Working to Get It Sold.
+          </p>
+        </section>
 
         {/* 3. CTA BOX */}
         <div className="bg-slate-900 rounded-none p-8 md:p-16 text-center border-2 border-slate-900 shadow-[6px_6px_0_#0f172a] overflow-hidden relative">
@@ -115,13 +103,15 @@ export default function SellPage() {
           <div className="absolute top-0 left-0 w-full h-1 bg-orange-500"></div>
           
           <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to talk?
+            Ready To Sell?
           </h2>
-          <p className="text-slate-400 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
-            Send the year, make, model, and a few photos if you have them. <br className="hidden md:block"/>
-            We&apos;ll follow up with the next step as soon as we can.
+          <p className="text-slate-300 max-w-2xl mx-auto text-lg leading-relaxed">
+            Whether you have one truck or an entire fleet, our experienced sales and marketing team is ready to help maximize your equipment&apos;s exposure and market value.
           </p>
-          
+          <p className="mt-4 mb-8 text-white font-bold max-w-2xl mx-auto text-lg leading-relaxed">
+            Contact us today to discuss your equipment and learn how our consignment program can work for you.
+          </p>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="tel:6105074832" 
