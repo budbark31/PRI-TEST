@@ -6,9 +6,15 @@ import type { PortableTextBlock } from "@portabletext/types";
 import ImageGallery from "@/app/components/ImageGallery"; 
 import ContactButtons from "@/app/components/ContactButtons";
 import InventoryCard from "@/app/components/InventoryCard"; // Reuse the card!
-import LoadableNutshellForm from "@/app/components/LoadableNutshellForm";
 import { Metadata } from "next";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
+
+const CATEGORY_LABELS: Record<string, string> = {
+  "dump-trucks": "Dump Trucks",
+  "day-cabs": "Day Cabs",
+  "heavy-equipment": "Heavy Equipment",
+  trailers: "Trailers",
+};
 
 // 1. UPDATED QUERY: Fetch the truck + 3 similar ones in the same category
 const TRUCK_QUERY = groq`{
@@ -45,9 +51,6 @@ const TRUCK_QUERY = groq`{
 }`;
 
 export const revalidate = 90;
-
-const SALES_FORM_ID = process.env.NEXT_PUBLIC_NUTSHELL_SALES_FORM_ID;
-const SALES_INSTANCE_ID = process.env.NEXT_PUBLIC_NUTSHELL_SALES_INSTANCE_ID;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -105,7 +108,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
   if (!data) {
     return {
-      title: "Truck Not Found | Penn Rock Industries",
+      title: "Truck Not Found",
       robots: {
         index: false,
         follow: false,
@@ -119,7 +122,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : "Heavy truck and equipment inventory at Penn Rock Industries.";
 
   return {
-    title: `${data.title} | Penn Rock Industries`,
+    title: data.title,
     description,
     alternates: {
       canonical: `/inventory/${slug}`,
@@ -153,7 +156,15 @@ export default async function TruckPage({ params }: Props) {
   const { truck, similar } = data || {};
 
   if (!truck) {
-    return <div className="text-center py-20">Truck Not Found</div>;
+    return (
+      <main className="max-w-3xl mx-auto px-4 py-24 text-center bg-white min-h-screen">
+        <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight">Truck Not Found</h1>
+        <p className="mt-4 text-lg text-gray-700">This listing may have sold or been removed.</p>
+        <Link href="/" className="mt-8 inline-block bg-slate-900 hover:bg-slate-800 text-white font-bold uppercase tracking-widest text-sm py-4 px-8 rounded-none">
+          Back to Inventory
+        </Link>
+      </main>
+    );
   }
 
   return (
@@ -179,7 +190,7 @@ export default async function TruckPage({ params }: Props) {
         <div className="flex flex-col h-full">
           {truck.category && (
             <span className="inline-block bg-gray-100 border-2 border-slate-900 text-xs px-2 py-1 rounded-none font-bold uppercase tracking-widest text-slate-900 mb-4 w-fit">
-              {truck.category}
+              {CATEGORY_LABELS[truck.category] ?? truck.category}
             </span>
           )}
 
@@ -219,17 +230,6 @@ export default async function TruckPage({ params }: Props) {
           </div>
         </div>
       )}
-
-      <section className="mt-16 border-t border-gray-200 pt-12">
-        <LoadableNutshellForm
-          title="Talk to Sales About This Truck"
-          description="Send a quick note and our sales team will follow up with availability, pricing, and shipping details."
-          buttonLabel="Load Sales Form"
-          formId={SALES_FORM_ID}
-          instanceId={SALES_INSTANCE_ID}
-          targetId={`nutshell-sales-${truck._id}`}
-        />
-      </section>
 
     </main>
   );

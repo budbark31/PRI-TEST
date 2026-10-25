@@ -4,7 +4,7 @@ import TeamCard from "@/app/components/TeamCard";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
 
 export const metadata: Metadata = {
-  title: "About Us | Penn Rock Industries",
+  title: "About Us",
   description: "Meet the team behind Penn Rock Industries. Serving the Mid-Atlantic with honest deals on heavy equipment.",
   alternates: {
     canonical: "/about",
@@ -78,6 +78,10 @@ export default function AboutPage() {
                 Whether you&apos;re looking for a truck, a piece of heavy equipment,
                 or help moving inventory quickly, Penn Rock is here to keep the
                 process simple and practical.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                We understand the heavy truck and equipment market, allowing us to
+                position your assets effectively and attract the right audience.
               </p>
             </div>
           </div>

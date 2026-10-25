@@ -6,10 +6,31 @@ export const inventoryType = defineType({
   title: "Inventory",
   type: "document",
   fields: [
-    defineField({ name: "title", type: "string", validation: (Rule) => Rule.required() }),
-    defineField({ name: "slug", type: "slug", options: { source: "title", maxLength: 96 }, validation: (Rule) => Rule.required() }),
-    defineField({ name: "images", type: "array", of: [{ type: "image" }] }),
-    defineField({ name: "price", type: "number", components: { input: PriceInput } }),
+    defineField({
+      name: "title",
+      type: "string",
+      description: "Shown as the listing name, e.g. \"2019 Kenworth T880 Tri-Axle Dump\". Avoid the words test, demo or sample, which hide a listing from the site.",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "slug",
+      type: "slug",
+      description: "The web address for this listing. Click Generate after typing the title.",
+      options: { source: "title", maxLength: 96 },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "images",
+      type: "array",
+      description: "The first photo is the main photo on the inventory page and in text-message previews. Drag photos to reorder.",
+      of: [{ type: "image" }],
+    }),
+    defineField({
+      name: "price",
+      type: "number",
+      description: "Numbers only, no commas. Leave empty to show \"Call for Price\".",
+      components: { input: PriceInput },
+    }),
     defineField({ name: "year", type: "number" }),
     defineField({ name: "make", type: "string" }),
     defineField({ name: "model", type: "string" }),
@@ -36,6 +57,7 @@ export const inventoryType = defineType({
     defineField({
       name: "status",
       type: "string",
+      description: "Pending shows a \"Pending Sale\" badge. Sold greys out the photo, adds a SOLD stamp and moves the listing to the bottom.",
       initialValue: "available",
       options: {
         list: [
@@ -45,9 +67,22 @@ export const inventoryType = defineType({
         ],
       },
     }),
-    defineField({ name: "category", type: "string" }),
+    defineField({
+      name: "category",
+      type: "string",
+      description: "Controls which filter the listing appears under on the site.",
+      options: {
+        list: [
+          { title: "Dump Trucks", value: "dump-trucks" },
+          { title: "Day Cabs", value: "day-cabs" },
+          { title: "Heavy Equipment", value: "heavy-equipment" },
+          { title: "Trailers", value: "trailers" },
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+    }),
     defineField({ name: "description", type: "array", of: [{ type: "block" }] }),
-    defineField({ name: "stockDate", type: "date" }),
-    defineField({ name: "paperwork", type: "string" }),
+    defineField({ name: "stockDate", type: "date", description: "Internal only. Not shown on the site." }),
+    defineField({ name: "paperwork", type: "string", description: "Internal only. Not shown on the site." }),
   ],
 });
