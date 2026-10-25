@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
 
   async headers() {
     const isProduction = process.env.NODE_ENV === "production";
-    const headers = [
+    const securityHeaders = [
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "X-Frame-Options", value: "SAMEORIGIN" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -14,8 +14,9 @@ const nextConfig: NextConfig = {
       { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
     ];
 
+    const siteHeaders = [...securityHeaders];
     if (isProduction) {
-      headers.unshift({
+      siteHeaders.unshift({
         key: "Content-Security-Policy",
         value: [
           "default-src 'self'",
@@ -34,8 +35,14 @@ const nextConfig: NextConfig = {
 
     return [
       {
-        source: "/(.*)",
-        headers,
+        // Public site: strict CSP.
+        source: "/((?!studio).*)",
+        headers: siteHeaders,
+      },
+      {
+        // Sanity Studio talks to *.api.sanity.io and Sanity's websockets, which the site CSP blocks.
+        source: "/studio/:path*",
+        headers: securityHeaders,
       },
     ];
   },
