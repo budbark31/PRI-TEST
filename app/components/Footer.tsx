@@ -44,8 +44,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <span>✉️</span>
-                <a href="mailto:bri.lambert@pennrockequipment.com" className="hover:text-white transition-colors">
-                  bri.lambert@pennrockequipment.com
+                <a href="mailto:blambert@pennrockequipment.com" className="hover:text-white transition-colors">
+                  blambert@pennrockequipment.com
                 </a>
               </li>
             </ul>
