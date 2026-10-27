@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import NutshellForm from "@/app/components/NutshellForm";
+import InquiryForm from "@/app/components/InquiryForm";
 
 interface ContactProps {
   truckTitle: string;
@@ -54,7 +54,7 @@ export default function ContactButtons({ truckTitle }: ContactProps) {
 
       {showEmailForm && (
         <div id={`email-form-${formTargetId}`} className="border-2 border-slate-900 bg-white p-4">
-          <NutshellForm targetId={`nutshell-email-${formTargetId}`} />
+          <InquiryForm truckTitle={truckTitle} />
         </div>
       )}
       

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Forms</title>
+  </head>
+  <body>
+    <!-- Netlify reads these at deploy time to register the site's forms. The live forms post here. -->
+    <form name="truck-inquiry" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="truck-inquiry" />
+      <input name="bot-field" />
+      <input name="truck" />
+      <input name="name" />
+      <input name="email" type="email" />
+      <input name="phone" type="tel" />
+      <textarea name="message"></textarea>
+    </form>
+    <form name="mailing-list" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="mailing-list" />
+      <input name="bot-field" />
+      <input name="email" type="email" />
+    </form>
+  </body>
+</html>

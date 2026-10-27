@@ -57,12 +57,12 @@ export default function Navbar() {
               About
             </Link>
 
-            {/* Cart is disabled during the consignment pivot. */}
+            {/* Cart is disabled during the consignment pivot. On phones the signup lives in the footer, since the bar has no room. */}
             {isSignupEnabled && (
               <button
                 type="button"
                 onClick={openSignup}
-                className="rounded-none border-2 border-slate-900 bg-orange-500 px-3 py-1 text-white font-bold uppercase tracking-widest text-xs transition-colors hover:bg-orange-600"
+                className="hidden md:inline-block rounded-none border-2 border-slate-900 bg-orange-500 px-3 py-1 text-white font-bold uppercase tracking-widest text-xs transition-colors hover:bg-orange-600"
               >
                 Join List
               </button>
