@@ -1,16 +1,12 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import NutshellForm from "@/app/components/NutshellForm";
+import { submitNetlifyForm } from "@/app/lib/netlifyForms";
 
 const STORAGE_KEY = "pri_signup_last_closed";
 const SHOW_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000;
-const MAILING_LIST_FORM_ID = process.env.NEXT_PUBLIC_NUTSHELL_MAILING_FORM_ID;
-const MAILING_LIST_INSTANCE_ID = process.env.NEXT_PUBLIC_NUTSHELL_MAILING_INSTANCE_ID;
-
-// The signup button only renders once a Nutshell mailing form is configured,
-// so visitors never open an empty popup.
-const SIGNUP_ENABLED = Boolean(MAILING_LIST_FORM_ID && MAILING_LIST_INSTANCE_ID);
+// Signups go to the "mailing-list" Netlify form; export them as CSV into whatever tool sends the emails.
+const SIGNUP_ENABLED = true;
 
 type EmailSignupContextValue = {
   openSignup: () => void;
@@ -21,6 +17,22 @@ const EmailSignupContext = createContext<EmailSignupContextValue | null>(null);
 
 export function EmailSignupProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    setStatus("sending");
+    try {
+      await submitNetlifyForm("mailing-list", {
+        email: String(data.get("email") ?? ""),
+        "bot-field": String(data.get("bot-field") ?? ""),
+      });
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
+  };
 
   useEffect(() => {
     const lastClosedRaw = window.localStorage.getItem(STORAGE_KEY);
@@ -74,13 +86,38 @@ export function EmailSignupProvider({ children }: { children: React.ReactNode })
           </p>
 
           <div className="mt-5">
-            {isOpen && (
-              <NutshellForm
-                formId={MAILING_LIST_FORM_ID}
-                instanceId={MAILING_LIST_INSTANCE_ID}
-                targetId="nutshell-form-mailing-list"
-                className="w-full max-w-full bg-white [&_*]:bg-white"
-              />
+            {status === "sent" ? (
+              <p className="text-sm font-semibold text-slate-900">You&apos;re on the list. Thanks!</p>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+                <p className="hidden">
+                  <label>
+                    Leave this empty: <input name="bot-field" tabIndex={-1} autoComplete="off" />
+                  </label>
+                </p>
+                <label htmlFor="signup-email" className="sr-only">Email</label>
+                <input
+                  id="signup-email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  tabIndex={isOpen ? 0 : -1}
+                  className="w-full border-2 border-slate-900 bg-white px-3 py-2 text-sm text-slate-900 rounded-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+                <button
+                  type="submit"
+                  disabled={status === "sending"}
+                  tabIndex={isOpen ? 0 : -1}
+                  className="shrink-0 bg-orange-500 hover:bg-orange-600 text-white border-2 border-slate-900 font-bold uppercase tracking-widest text-sm px-4 py-2 rounded-none transition-colors disabled:opacity-60"
+                >
+                  {status === "sending" ? "Joining..." : "Join"}
+                </button>
+              </form>
+            )}
+            {status === "error" && (
+              <p className="mt-2 text-sm text-red-600">That didn&apos;t go through. Please try again.</p>
             )}
           </div>
 

@@ -20,15 +20,14 @@ const nextConfig: NextConfig = {
         key: "Content-Security-Policy",
         value: [
           "default-src 'self'",
-          "script-src 'self' 'unsafe-inline' https://loader.nutshell.com",
+          "script-src 'self' 'unsafe-inline'",
           "style-src 'self' 'unsafe-inline'",
           "img-src 'self' data: https://cdn.sanity.io",
-          "connect-src 'self' https://app.nutshell.com https://api.nutshell.com https://*.nutshell.com https://cdn.sanity.io",
-          "frame-src https://app.nutshell.com https://*.nutshell.com",
+          "connect-src 'self' https://cdn.sanity.io",
           "font-src 'self' data:",
           "object-src 'none'",
           "base-uri 'self'",
-          "form-action 'self' https://*.nutshell.com",
+          "form-action 'self'",
         ].join("; "),
       });
     }

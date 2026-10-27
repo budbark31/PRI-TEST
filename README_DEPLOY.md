@@ -31,16 +31,11 @@ DRY_RUN=true node scripts/sanity-migrate-usage.mjs
 node scripts/sanity-migrate-usage.mjs
 ```
 
-3. Nutshell QA via tunnel
+3. Forms
 
-- Install `ngrok` and run:
-
-```bash
-ngrok http 3000
-```
-
-- Update `.env.local` `NEXT_PUBLIC_SITE_URL` to the ngrok URL and restart dev server.
-- Follow `docs/NUTSHELL_QA.md` to exercise the forms.
+- The truck "Email Sales" form and the mailing list signup are Netlify Forms, defined in `public/__forms.html`.
+- In Netlify: Forms → enable form detection, then add an email notification for each form.
+- Submissions are under Forms in the Netlify dashboard; the mailing list exports as CSV.
 
 4. CI / Build
 
