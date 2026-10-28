@@ -73,6 +73,9 @@ export const inventoryType = defineType({
       description: "Controls which filter the listing appears under on the site.",
       options: {
         list: [
+          { title: "Light Duty Trucks", value: "light-duty-trucks" },
+          { title: "Medium Duty Trucks", value: "medium-duty-trucks" },
+          { title: "Heavy Duty Trucks", value: "heavy-duty-trucks" },
           { title: "Dump Trucks", value: "dump-trucks" },
           { title: "Day Cabs", value: "day-cabs" },
           { title: "Heavy Equipment", value: "heavy-equipment" },
