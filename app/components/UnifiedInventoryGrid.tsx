@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CATEGORIES, CATEGORY_LABELS, type CategoryGroup } from "@/app/lib/categories";
 
 interface Truck {
   _id: string;
@@ -34,33 +35,18 @@ interface FilterSection {
 }
 
 const TRUCK_MAKES = ["Kenworth", "Peterbilt", "Mack", "Ford", "Freightliner", "International", "Other"];
-const TRUCK_CATEGORIES = ["Dump Trucks", "Day Cabs", "Heavy Equipment", "Trailers"];
 const PAGE_SIZE = 12;
 
-const truckCategoryMap: Record<string, string> = {
-  "Dump Trucks": "dump-trucks",
-  "Day Cabs": "day-cabs",
-  "Heavy Equipment": "heavy-equipment",
-  Trailers: "trailers",
+const TRUCK_CATEGORY_GROUPS: Record<CategoryGroup, string[]> = {
+  trucks: CATEGORIES.filter((c) => c.group === "trucks").map((c) => c.value),
+  equipment: CATEGORIES.filter((c) => c.group === "equipment").map((c) => c.value),
 };
 
-const TRUCK_CATEGORY_GROUPS: Record<"trucks" | "equipment", string[]> = {
-  trucks: ["dump-trucks", "day-cabs", "trailers"],
-  equipment: ["heavy-equipment"],
-};
-
-const DEFAULT_TRUCK_CATEGORIES = Object.values(truckCategoryMap);
+const DEFAULT_TRUCK_CATEGORIES: string[] = CATEGORIES.map((c) => c.value);
 const FILTER_USAGE_STORAGE_KEY = "pri_filter_usage_v1";
 
 function formatCategory(category: string): string {
-  const map: Record<string, string> = {
-    "dump-trucks": "Dump Trucks",
-    "day-cabs": "Day Cabs",
-    "heavy-equipment": "Heavy Equipment",
-    trailers: "Trailers",
-  };
-
-  return map[category] || category;
+  return CATEGORY_LABELS[category] || category;
 }
 
 function formatUsage(truck: Pick<Truck, "usage" | "hoursOrMileage">): string {
@@ -182,7 +168,7 @@ export default function UnifiedInventoryGrid({ trucks }: UnifiedGridProps) {
       {
         key: "truck-category",
         title: "Category",
-        options: TRUCK_CATEGORIES.map((label) => ({ label, value: truckCategoryMap[label] })),
+        options: CATEGORIES.map(({ label, value }) => ({ label, value })),
         selectedValues: truckCategories,
         onToggle: (value) => {
           setTruckCategories((prev) =>
@@ -201,7 +187,7 @@ export default function UnifiedInventoryGrid({ trucks }: UnifiedGridProps) {
     [truckMakes, truckCategories, resetVisibleCount]
   );
 
-  const toggleCategoryGroup = (groupKey: "trucks" | "equipment") => {
+  const toggleCategoryGroup = (groupKey: CategoryGroup) => {
     setTruckCategories((prev) => {
       const next = new Set(prev);
       const groupValues = TRUCK_CATEGORY_GROUPS[groupKey];

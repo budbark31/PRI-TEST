@@ -8,13 +8,8 @@ import ContactButtons from "@/app/components/ContactButtons";
 import InventoryCard from "@/app/components/InventoryCard"; // Reuse the card!
 import { Metadata } from "next";
 import { DEFAULT_OG_IMAGE, SITE_NAME, buildAbsoluteUrl } from "@/app/lib/site";
+import { CATEGORY_LABELS } from "@/app/lib/categories";
 
-const CATEGORY_LABELS: Record<string, string> = {
-  "dump-trucks": "Dump Trucks",
-  "day-cabs": "Day Cabs",
-  "heavy-equipment": "Heavy Equipment",
-  trailers: "Trailers",
-};
 
 // 1. UPDATED QUERY: Fetch the truck + 3 similar ones in the same category
 const TRUCK_QUERY = groq`{

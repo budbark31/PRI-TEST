@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { orderRankField } from "@sanity/orderable-document-list";
 import PriceInput from "./components/PriceInput";
 
 export const inventoryType = defineType({
@@ -73,6 +74,9 @@ export const inventoryType = defineType({
       description: "Controls which filter the listing appears under on the site.",
       options: {
         list: [
+          { title: "Light Duty Trucks", value: "light-duty-trucks" },
+          { title: "Medium Duty Trucks", value: "medium-duty-trucks" },
+          { title: "Heavy Duty Trucks", value: "heavy-duty-trucks" },
           { title: "Dump Trucks", value: "dump-trucks" },
           { title: "Day Cabs", value: "day-cabs" },
           { title: "Heavy Equipment", value: "heavy-equipment" },
@@ -82,6 +86,7 @@ export const inventoryType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({ name: "description", type: "array", of: [{ type: "block" }] }),
+    orderRankField({ type: "inventory", newItemPosition: "before" }),
     defineField({ name: "stockDate", type: "date", description: "Internal only. Not shown on the site." }),
     defineField({ name: "paperwork", type: "string", description: "Internal only. Not shown on the site." }),
   ],
