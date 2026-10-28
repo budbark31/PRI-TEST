@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { orderRankField } from "@sanity/orderable-document-list";
 import PriceInput from "./components/PriceInput";
 
 export const inventoryType = defineType({
@@ -68,13 +69,6 @@ export const inventoryType = defineType({
       },
     }),
     defineField({
-      name: "featured",
-      title: "Show at top",
-      type: "boolean",
-      description: "Check this to pin the listing to the top of the inventory page, ahead of newer listings.",
-      initialValue: false,
-    }),
-    defineField({
       name: "category",
       type: "string",
       description: "Controls which filter the listing appears under on the site.",
@@ -92,6 +86,7 @@ export const inventoryType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({ name: "description", type: "array", of: [{ type: "block" }] }),
+    orderRankField({ type: "inventory", newItemPosition: "before" }),
     defineField({ name: "stockDate", type: "date", description: "Internal only. Not shown on the site." }),
     defineField({ name: "paperwork", type: "string", description: "Internal only. Not shown on the site." }),
   ],

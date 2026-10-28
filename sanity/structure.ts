@@ -1,9 +1,10 @@
 import type { StructureResolver } from "sanity/structure";
-import { CheckmarkCircleIcon, CloseCircleIcon, TagIcon } from "@sanity/icons";
+import { CheckmarkCircleIcon, CloseCircleIcon, SortIcon, TagIcon } from "@sanity/icons";
+import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 
 const MAKES = ["Kenworth", "Peterbilt", "Mack", "Ford", "Freightliner", "International"];
 
-export const structure: StructureResolver = (S) => {
+export const structure: StructureResolver = (S, context) => {
   const truckList = (title: string, filter: string, params?: Record<string, unknown>) =>
     S.documentList()
       .title(title)
@@ -15,6 +16,15 @@ export const structure: StructureResolver = (S) => {
   return S.list()
     .title("Penn Rock Admin")
     .items([
+      orderableDocumentListDeskItem({
+        type: "inventory",
+        id: "arrange-trucks",
+        title: "Arrange Website Order",
+        icon: SortIcon,
+        filter: 'status != "sold"',
+        S,
+        context,
+      }),
       S.listItem()
         .title("Active Trucks")
         .icon(CheckmarkCircleIcon)
