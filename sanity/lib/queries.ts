@@ -4,7 +4,7 @@ export const EXCLUDE_DEMO_INVENTORY =
   "!(lower(coalesce(title, '')) match '*demo*' || lower(coalesce(title, '')) match '*test*' || lower(coalesce(title, '')) match '*sample*')";
 
 export const ALL_INVENTORY_QUERY = groq`{
-  "trucks": *[_type == "inventory" && defined(slug.current) && ${EXCLUDE_DEMO_INVENTORY}] | order(select(status == "sold" => 1, 0) asc, _updatedAt desc) {
+  "trucks": *[_type == "inventory" && defined(slug.current) && ${EXCLUDE_DEMO_INVENTORY}] | order(select(status == "sold" => 1, 0) asc, select(featured == true => 0, 1) asc, _updatedAt desc) {
     _id,
     _type,
     title,

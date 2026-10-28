@@ -68,6 +68,13 @@ export const inventoryType = defineType({
       },
     }),
     defineField({
+      name: "featured",
+      title: "Show at top",
+      type: "boolean",
+      description: "Check this to pin the listing to the top of the inventory page, ahead of newer listings.",
+      initialValue: false,
+    }),
+    defineField({
       name: "category",
       type: "string",
       description: "Controls which filter the listing appears under on the site.",
