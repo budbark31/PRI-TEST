@@ -57,7 +57,7 @@ export default function SellPage() {
             
             <ul className="space-y-5 flex-grow">
               {[
-                "Dump Trucks (Kenworth, Peterbilt, Mack)",
+                "Dump Trucks",
                 "Day Cabs & Sleepers",
                 "Excavators & Dozers",
                 "Lowboy & Dump Trailers",
