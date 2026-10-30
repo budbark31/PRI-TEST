@@ -31,6 +31,11 @@ const teamMembers = [
     role: "Sales & Acquisitions",
     bio: `With over 35 years of hands-on experience in the truck and heavy equipment industry, Bryan has built a reputation for knowledge, integrity, and results. Specializing in all types of commercial trucks and construction equipment, Bryan has spent decades helping customers buy, sell, and source the equipment they need to keep their businesses moving forward. His experience spans dump trucks, sleepers, day cabs, vocational trucks, trailers, and a wide range of construction and heavy equipment. Known for his strong industry relationships and practical understanding of equipment values and market trends, Bryan takes pride in connecting buyers and sellers while creating smooth, honest transactions. Bryan’s passion for trucks and equipment started early and continues to drive his commitment to customer service today. Whether working with individual owner-operators, contractors, or large fleets, he brings professionalism, industry expertise, and a problem-solving mindset to every deal. Throughout his career, Bryan has earned the trust of customers by focusing on hard work, transparency, and long-term relationships principles that continue to define his approach today.`,
   },
+  {
+    name: "Austin",
+    role: "Sales (Part-Time)",
+    bio: `Austin Feather is an accomplished sales professional with a strong foundation in foreman leadership and precision mechanics. With a career built on hands-on expertise and operational insight, he brings a disciplined, results-driven approach to every endeavor. His ability to bridge technical knowledge with client-focused solutions allows him to consistently deliver high-quality outcomes and drive performance. Known for his professionalism, attention to detail, and commitment to excellence, Austin has earned a reputation for reliability and efficiency in fast-paced environments. His leadership background continues to influence his approach, emphasizing accountability, clear communication, and high standards.`,
+  },
 ];
 
 export default function AboutPage() {
@@ -82,15 +87,12 @@ export default function AboutPage() {
             Meet the Team
           </h2>
 
-          <div className="max-w-xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto items-start">
             {teamMembers.map((member, index) => (
               <TeamCard key={index} member={member} />
             ))}
           </div>
 
-          <p className="mt-8 text-center text-gray-700">
-            <span className="font-bold text-slate-900">Also helping out:</span> Austin Feather, part-time sales support.
-          </p>
         </section>
       </div>
     </main>
